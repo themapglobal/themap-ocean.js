@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/miquelcabot/themap-ocean.js/issues"
   },
-  "homepage": "https://github.com/miquelcabot/themap-ocean.js#readme"
+  "homepage": "https://github.com/miquelcabot/themap-ocean.js#readme",
+  "dependencies": {
+    "@oceanprotocol/lib": "https://github.com/miquelcabot/ocean.js.git#main"
+  }
 }
