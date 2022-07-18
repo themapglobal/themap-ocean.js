@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/miquelcabot/themap-ocean.js#readme",
   "dependencies": {
-    "@oceanprotocol/lib": "https://github.com/miquelcabot/ocean.js.git#main"
+    "@oceanprotocol/lib": "https://github.com/miquelcabot/ocean.js.git#main",
+    "web3": "^1.7.4"
   }
 }
