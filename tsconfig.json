@@ -14,12 +14,12 @@
     "removeComments": false,
     "experimentalDecorators": true,
     "preserveConstEnums": true,
-    "outDir": "./dist/",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "sourceMap": true,
-    "declarationDir": "./dist/"
+    "declarationDir": "./dist"
   },
   "include": [
-    "src/**/*",
-    "test/**/*"
+    "src/**/*"
   ]
 }
