@@ -25,44 +25,50 @@ export class Node extends Nft {
     super(web3, network, nftAbi, config)
     this.nftAddress = nftAddress
   }
-  /*  #==== inbounds
-  def getInboundNodes(self) -> List[str]:
-      return self._getNodes(INBOUND_KEY)
 
-  def getInboundAddrs(self) -> List[str]:
-      return self._getAddrs(INBOUND_KEY)
+  // ==== inbounds ====
 
-  def addInboundNode(self, node, wallet):
-      self.addInboundAddr(node.address, wallet)
-      
-  def addInboundAddr(self, node_address:str, wallet):
-      self._addAddr(INBOUND_KEY, node_address, wallet)
-      
-  #==== outbounds
-  def getOutboundNodes(self) -> List[str]:
-      return self._getNodes(OUTBOUND_KEY)
+  public async getInboundAddrs(): Promise<string[]> {
+    return await this._getAddrs(INBOUND_KEY)
+  }
 
-  def getOutboundAddrs(self) -> List[str]:
-      return self._getAddrs(OUTBOUND_KEY)
+  public async addInboundNode(account: string, node: Node): Promise<void> {
+    await this.addInboundAddr(account, node.nftAddress)
+  }
+  
+  public async addInboundAddr(account: string, nodeAddress: string): Promise<void> {
+    await this._addAddr(account, INBOUND_KEY, nodeAddress)
+  }
 
-  def addOutboundNode(self, node, wallet):
-      self.addOutboundAddr(node.address, wallet)
+  // ==== outbounds ====
 
-  def addOutboundAddr(self, node_address:str, wallet):
-      self._addAddr(OUTBOUND_KEY, node_address, wallet)
-      
-  #==== helpers
-  def _getNodes(self, key:str) -> List[str]:
-      return [nodeAt(addr, self.web3) for addr in self._getAddrs(key)]
-      
-  def _getAddrs(self, key:str) -> List[str]:
-      return self.getData(key).split()
+  public async getOutboundAddrs(): Promise<string[]> {
+    return await this._getAddrs(OUTBOUND_KEY)
+  }
 
-  def _addAddr(self, key:str, address:str, wallet):
-      s = self.getData(key)
-      assert address not in s
-      self.setData(key, f"{s} {address}", wallet) 
- */
+  public async addOutboundNode(account: string, node: Node): Promise<void> {
+    await this.addOutboundAddr(account, node.nftAddress)
+  }
+  
+  public async addOutboundAddr(account: string, nodeAddress: string): Promise<void> {
+    await this._addAddr(account, OUTBOUND_KEY, nodeAddress)
+  }
+
+  // ==== helpers ====
+
+  public async _getAddrs(key: string): Promise<string[]> {
+    const s = await this.getNodeData(key)
+    return s.split(' ')
+  }
+
+  public async _addAddr(account: string, key: string, value: string) {
+    const s = await this.getNodeData(key)
+    if (s.includes(value)) {
+      throw new Error(`${value} already exists in ${key}`)
+    }
+    await this.setNodeData(account, key, `${s} ${value}`)
+  }
+
   public async setNodeData(account: string, key: string, value: string): Promise<void> {
     await this.setData(this.nftAddress, account, key, value)
   }
@@ -122,8 +128,8 @@ export class NodeFactory {
     const nftAddress = await this.factory.createNFT(account, nftParamsAsset)
 
     const node = new Node(nftAddress, this.web3, this.network, null, this.config)
-    await node.setNodeData(account, INBOUND_KEY, " ")
-    await node.setNodeData(account, OUTBOUND_KEY, " ")
+    await node.setNodeData(account, INBOUND_KEY, "")
+    await node.setNodeData(account, OUTBOUND_KEY, "")
     return node
   }
 
