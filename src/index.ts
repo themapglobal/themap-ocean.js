@@ -91,6 +91,10 @@ async function main() {
   console.log(`project.address: ${projectPyscript.nftAddress}`)
   console.log(`project.${INBOUND_KEY}: ${await projectPyscript.getNodeData(INBOUND_KEY)}`)
   console.log(`project.${OUTBOUND_KEY}: ${await projectPyscript.getNodeData(OUTBOUND_KEY)}`)
+
+  // test set metadata
+  await projectPyscript.setNodeData(publisherAccount, 'testKey', 'testValue')
+  console.log(`project.testKey: ${await projectPyscript.getNodeData('testKey')}`)
 }
 
 main()
