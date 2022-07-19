@@ -32,7 +32,7 @@ docker system prune -a --volumes
 ./start_ocean.sh
 ```
 
-## Install dependencies, including ocean.py
+## Install dependencies, including ocean.js
 
 In a new console:
 
@@ -40,37 +40,9 @@ In a new console:
 yarn install
 ```
 
-## Set envvars
-```console
-# Set envvars
-export TEST_PRIVATE_KEY1=0x8467415bb2ba7c91084d932276214b11a3dd9bdb2930fefa194b666dd8020b99
-
-# Set the address file only for ganache
-export ADDRESS_FILE=~/.ocean/ocean-contracts/artifacts/address.json
-
-# Set network URL
-export OCEAN_NETWORK_URL=http://127.0.0.1:8545
-```
-
 # Usage: Running Tests
 
 In terminal:
 ```console
-#run tests for one method, with print statements to console. "-s" is to show output
-pytest test_themap.py::test1 -s
-
-#run tests for one module
-pytest test_themap.py
-
-#run all tests
-pytest
+yarn start
 ```
-
-# Usage: Playing
-
-Open a new console and:
-```console
-python
-```
-
-Open [test_themap.py](test_themap.py) in a separate browser window. Then to play, copy and paste code from it into the console.
