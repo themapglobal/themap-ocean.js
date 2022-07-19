@@ -3,11 +3,15 @@ import {
   NftCreateData,
   configHelperNetworks,
   ConfigHelper,
-  Config
+  Config,
+  Nft
 } from '@oceanprotocol/lib'
 import Web3 from 'web3';
 import fs from 'fs'
 import { homedir } from 'os'
+
+const INBOUND_KEY = 'inbound_addrs'
+const OUTBOUND_KEY = 'outbound_addrs'
 
 const getAddresses = () => {
   const data = JSON.parse(
@@ -21,12 +25,13 @@ const getAddresses = () => {
   return data.development
 }
 
-export class Node {
+export class Node extends Nft {
 
 }
 
 export class NodeFactory {
   private web3: Web3
+  private network: string | number
   private config: Config
   private addresses: any
   private factory: NftFactory
@@ -38,6 +43,7 @@ export class NodeFactory {
     config?: Config
   ) {
     this.web3 = new Web3(nodeUri || configHelperNetworks[1].nodeUri)
+    this.network = network
     this.config = config || new ConfigHelper().getConfig(network || 'unknown')
     this.addresses = getAddresses()
 
@@ -70,16 +76,13 @@ export class NodeFactory {
       owner: account
     }
 
-    this.factory.createNFT(account, nftParamsAsset)
+    const nftAddress = await this.factory.createNFT(account, nftParamsAsset)
 
-    const node = new Node()
+    const node = new Node(this.web3, this.network, null, this.config)
+    node.setNftAddress(nftAddress)
+    node.setData(account, INBOUND_KEY, " ")
+    node.setData(account, OUTBOUND_KEY, " ")
     return node
-    // node = Node()
-    // https://stackoverflow.com/questions/60920784/python-how-to-convert-an-existing-parent-class-object-to-child-class-object
-    // node.__dict__.update(data_nft.__dict__)
-    // node.setData(INBOUND_KEY, " ", wallet)
-    // node.setData(OUTBOUND_KEY, " ", wallet)
-    // return node
   }
 
   private randomNumber(): string {
