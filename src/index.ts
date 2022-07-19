@@ -55,11 +55,11 @@ async function main() {
   // create a new node using the node factory
   const nodeFactory = new NodeFactory(addresses.ERC721Factory, config)
 
-  const goalAddress = await nodeFactory.newGoal('Test goal', publisherAccount)
-  console.log(`Goal node address: ${goalAddress}`)
+  const goal = await nodeFactory.newGoal('Test goal', publisherAccount)
+  console.log(`Goal node address: ${goal.nftAddress}`)
 
-  const projectAddress = await nodeFactory.newProject('Test project', publisherAccount)
-  console.log(`Project node address: ${projectAddress}`)
+  const project = await nodeFactory.newProject('Test project', publisherAccount)
+  console.log(`Project node address: ${project.nftAddress}`)
 }
 
 main()
