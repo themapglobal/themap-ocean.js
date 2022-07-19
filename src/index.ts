@@ -55,16 +55,30 @@ async function main() {
   // create a new node using the node factory
   const nodeFactory = new NodeFactory(addresses.ERC721Factory, config)
 
-  const goal = await nodeFactory.newGoal('Test goal', publisherAccount)
-  console.log(`Goal node address: ${goal.nftAddress}`)
-  console.log(`goal.${INBOUND_KEY}: ${await goal.getNodeData(INBOUND_KEY)}`)
-  console.log(`goal.${OUTBOUND_KEY}: ${await goal.getNodeData(OUTBOUND_KEY)}`)
+  const goalPyWasm = await nodeFactory.newGoal('Py run on WASM', publisherAccount)
+  console.log(`Goal node address: ${goalPyWasm.nftAddress}`)
+  console.log(`goal.${INBOUND_KEY}: ${await goalPyWasm.getNodeData(INBOUND_KEY)}`)
+  console.log(`goal.${OUTBOUND_KEY}: ${await goalPyWasm.getNodeData(OUTBOUND_KEY)}`)
 
-  const project = await nodeFactory.newProject('Test project', publisherAccount)
-  console.log(`Project node address: ${project.nftAddress}`)
+  const goalPyBrowser = await nodeFactory.newGoal('Py run in browser', publisherAccount)
+  console.log(`Goal node address: ${goalPyBrowser.nftAddress}`)
+  console.log(`goal.${INBOUND_KEY}: ${await goalPyBrowser.getNodeData(INBOUND_KEY)}`)
+  console.log(`goal.${OUTBOUND_KEY}: ${await goalPyBrowser.getNodeData(OUTBOUND_KEY)}`)
 
-  console.log(`project.${INBOUND_KEY}: ${await project.getNodeData(INBOUND_KEY)}`)
-  console.log(`project.${OUTBOUND_KEY}: ${await project.getNodeData(OUTBOUND_KEY)}`)
+  const projectX = await nodeFactory.newProject('Proj.: X', publisherAccount)
+  console.log(`Project node address: ${projectX.nftAddress}`)
+  console.log(`project.${INBOUND_KEY}: ${await projectX.getNodeData(INBOUND_KEY)}`)
+  console.log(`project.${OUTBOUND_KEY}: ${await projectX.getNodeData(OUTBOUND_KEY)}`)
+
+  const projectY = await nodeFactory.newProject('Proj.: Y', publisherAccount)
+  console.log(`Project node address: ${projectY.nftAddress}`)
+  console.log(`project.${INBOUND_KEY}: ${await projectY.getNodeData(INBOUND_KEY)}`)
+  console.log(`project.${OUTBOUND_KEY}: ${await projectY.getNodeData(OUTBOUND_KEY)}`)
+
+  const projectPyscript = await nodeFactory.newProject('Project: Pyscript', publisherAccount)
+  console.log(`Project node address: ${projectPyscript.nftAddress}`)
+  console.log(`project.${INBOUND_KEY}: ${await projectPyscript.getNodeData(INBOUND_KEY)}`)
+  console.log(`project.${OUTBOUND_KEY}: ${await projectPyscript.getNodeData(OUTBOUND_KEY)}`)
 }
 
 main()
