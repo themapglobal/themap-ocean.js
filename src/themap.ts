@@ -9,8 +9,8 @@ import {
 import { AbiItem } from 'web3-utils';
 import Web3 from 'web3';
 
-const INBOUND_KEY = 'inbound_addrs'
-const OUTBOUND_KEY = 'outbound_addrs'
+export const INBOUND_KEY = 'inbound_addrs'
+export const OUTBOUND_KEY = 'outbound_addrs'
 
 export class Node extends Nft {
   public nftAddress: string
@@ -122,10 +122,8 @@ export class NodeFactory {
     const nftAddress = await this.factory.createNFT(account, nftParamsAsset)
 
     const node = new Node(nftAddress, this.web3, this.network, null, this.config)
-    node.setNodeData(account, INBOUND_KEY, "A ")
-    node.setNodeData(account, OUTBOUND_KEY, "B ")
-    console.log(`${INBOUND_KEY}: ${await node.getNodeData(INBOUND_KEY)}`)
-    console.log(`${OUTBOUND_KEY}: ${await node.getNodeData(OUTBOUND_KEY)}`)
+    await node.setNodeData(account, INBOUND_KEY, " ")
+    await node.setNodeData(account, OUTBOUND_KEY, " ")
     return node
   }
 
