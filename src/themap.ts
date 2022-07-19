@@ -20,10 +20,9 @@ export class Node extends Nft {
     nftAddress: string,
     web3: Web3,
     network?: string | number,
-    nftAbi?: AbiItem | AbiItem[],
     config?: Config
   ) {
-    super(web3, network, nftAbi, config)
+    super(web3, network, null, config)
     this.nftAddress = nftAddress
   }
 
@@ -142,7 +141,7 @@ export class NodeFactory {
 
     const nftAddress = await this.factory.createNFT(account, nftParamsAsset)
 
-    const node = new Node(nftAddress, this.web3, this.network, null, this.config)
+    const node = new Node(nftAddress, this.web3, this.network, this.config)
     await node.setNodeData(account, INBOUND_KEY, "")
     await node.setNodeData(account, OUTBOUND_KEY, "")
     return node
