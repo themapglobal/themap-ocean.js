@@ -1,8 +1,4 @@
-import {
-  transfer,
-  configHelperNetworks,
-  ConfigHelper
-} from '@oceanprotocol/lib'
+import { configHelperNetworks, ConfigHelper } from '@oceanprotocol/lib'
 import Web3 from 'web3';
 import fs from 'fs'
 import { homedir } from 'os'
@@ -41,16 +37,11 @@ async function main() {
   // initialize accounts
   const accounts = await web3.eth.getAccounts()
   const publisherAccount = accounts[0]
-  const consumerAccount = accounts[1]
 
   console.log(`Publisher account address: ${publisherAccount}`)
-  console.log(`Consumer account address: ${consumerAccount}`)
 
   // get the address of the deployed contracts
   const addresses = getAddresses()
-
-  // send some OCEAN to consumer account
-  transfer(web3, publisherAccount, addresses.Ocean, consumerAccount, '100')
   
   // create new nodes using the node factory
   const nodeFactory = new NodeFactory(addresses.ERC721Factory, config)
