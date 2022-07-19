@@ -61,21 +61,27 @@ async function main() {
   console.log(`goal.${OUTBOUND_KEY}: ${await goalPyWasm.getNodeData(OUTBOUND_KEY)}`)
 
   const goalPyBrowser = await nodeFactory.newGoal('Py run in browser', publisherAccount)
+  await goalPyBrowser.addInboundNode(publisherAccount, goalPyWasm)
   console.log(`Goal node address: ${goalPyBrowser.nftAddress}`)
   console.log(`goal.${INBOUND_KEY}: ${await goalPyBrowser.getNodeData(INBOUND_KEY)}`)
   console.log(`goal.${OUTBOUND_KEY}: ${await goalPyBrowser.getNodeData(OUTBOUND_KEY)}`)
 
   const projectX = await nodeFactory.newProject('Proj.: X', publisherAccount)
+  await projectX.addOutboundNode(publisherAccount, goalPyBrowser)
   console.log(`Project node address: ${projectX.nftAddress}`)
   console.log(`project.${INBOUND_KEY}: ${await projectX.getNodeData(INBOUND_KEY)}`)
   console.log(`project.${OUTBOUND_KEY}: ${await projectX.getNodeData(OUTBOUND_KEY)}`)
 
   const projectY = await nodeFactory.newProject('Proj.: Y', publisherAccount)
+  await projectY.addOutboundNode(publisherAccount, goalPyBrowser)
   console.log(`Project node address: ${projectY.nftAddress}`)
   console.log(`project.${INBOUND_KEY}: ${await projectY.getNodeData(INBOUND_KEY)}`)
   console.log(`project.${OUTBOUND_KEY}: ${await projectY.getNodeData(OUTBOUND_KEY)}`)
 
   const projectPyscript = await nodeFactory.newProject('Project: Pyscript', publisherAccount)
+  await projectPyscript.addInboundNode(publisherAccount, goalPyWasm)
+  await projectPyscript.addOutboundNode(publisherAccount, goalPyBrowser)
+  await projectPyscript.addOutboundNode(publisherAccount, projectY)
   console.log(`Project node address: ${projectPyscript.nftAddress}`)
   console.log(`project.${INBOUND_KEY}: ${await projectPyscript.getNodeData(INBOUND_KEY)}`)
   console.log(`project.${OUTBOUND_KEY}: ${await projectPyscript.getNodeData(OUTBOUND_KEY)}`)
