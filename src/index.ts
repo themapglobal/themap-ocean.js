@@ -6,7 +6,7 @@ import {
 import Web3 from 'web3';
 import fs from 'fs'
 import { homedir } from 'os'
-import { NodeFactory } from './themap';
+import { INBOUND_KEY, NodeFactory, OUTBOUND_KEY } from './themap';
 
 const web3 = new Web3(process.env.NODE_URI || configHelperNetworks[1].nodeUri)
 
@@ -57,9 +57,14 @@ async function main() {
 
   const goal = await nodeFactory.newGoal('Test goal', publisherAccount)
   console.log(`Goal node address: ${goal.nftAddress}`)
+  console.log(`goal.${INBOUND_KEY}: ${await goal.getNodeData(INBOUND_KEY)}`)
+  console.log(`goal.${OUTBOUND_KEY}: ${await goal.getNodeData(OUTBOUND_KEY)}`)
 
   const project = await nodeFactory.newProject('Test project', publisherAccount)
   console.log(`Project node address: ${project.nftAddress}`)
+
+  console.log(`project.${INBOUND_KEY}: ${await project.getNodeData(INBOUND_KEY)}`)
+  console.log(`project.${OUTBOUND_KEY}: ${await project.getNodeData(OUTBOUND_KEY)}`)
 }
 
 main()
