@@ -4,7 +4,8 @@ import {
   configHelperNetworks,
   ConfigHelper,
   Config,
-  Nft
+  Nft,
+  setContractDefaults
 } from '@oceanprotocol/lib'
 import { AbiItem } from 'web3-utils';
 import Web3 from 'web3';
@@ -24,6 +25,22 @@ export class Node extends Nft {
   ) {
     super(web3, network, nftAbi, config)
     this.nftAddress = nftAddress
+  }
+
+  public async name(): Promise<string> {
+    const nftContract = setContractDefaults(
+      new this.web3.eth.Contract(this.nftAbi, this.nftAddress),
+      this.config
+    )
+    return await nftContract.methods.name().call()
+  }
+
+  public async symbol(): Promise<string> {
+    const nftContract = setContractDefaults(
+      new this.web3.eth.Contract(this.nftAbi, this.nftAddress),
+      this.config
+    )
+    return await nftContract.methods.symbol().call()
   }
 
   // ==== inbounds ====
@@ -105,13 +122,11 @@ export class NodeFactory {
 
   public async newGoal(name: string, account: string): Promise<Node> {
     const symbol = `GOAL-${this._randomNumber()}`
-    console.log(symbol)
     return this._newNode(symbol, name, account)
   }
 
   public async newProject(name: string, account: string): Promise<Node> {
     const symbol = `PROJ-${this._randomNumber()}`
-    console.log(symbol)
     return this._newNode(symbol, name, account)
   }
 
