@@ -52,7 +52,7 @@ async function main() {
   // send some OCEAN to consumer account
   transfer(web3, publisherAccount, addresses.Ocean, consumerAccount, '100')
   
-  // create a new node using the node factory
+  // create new nodes using the node factory
   const nodeFactory = new NodeFactory(addresses.ERC721Factory, config)
 
   console.log('------------------------------------------------')
