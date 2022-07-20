@@ -1,4 +1,4 @@
-import { configHelperNetworks, ConfigHelper } from '@oceanprotocol/lib'
+import { configHelperNetworks, ConfigHelper, Aquarius, SearchQuery } from '@oceanprotocol/lib'
 import Web3 from 'web3';
 import fs from 'fs'
 import { homedir } from 'os'
@@ -30,6 +30,7 @@ const getAddresses = () => {
 async function main() {
   // load the configuration
   const config = await getTestConfig(web3)
+  const aquarius = new Aquarius(config.metadataCacheUri)
 
   console.log(`Aquarius URL: ${config.metadataCacheUri}`)
   console.log(`Provider URL: ${config.providerUri}`)
@@ -95,6 +96,13 @@ async function main() {
   // test set metadata
   await projectPyscript.setNodeData(publisherAccount, 'testKey', 'testValue')
   console.log(`project.testKey: ${await projectPyscript.getNodeData('testKey')}`)
+
+  // query aquarius
+  const searchQuery: SearchQuery = {
+    query: {}
+  }
+  const search = await aquarius.querySearch(searchQuery)
+  console.log(search)
 }
 
 main()
