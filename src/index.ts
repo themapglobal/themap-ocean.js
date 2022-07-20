@@ -30,6 +30,8 @@ const getAddresses = () => {
 async function main() {
   // load the configuration
   const config = await getTestConfig(web3)
+  config.metadataCacheUri = 'https://v4.aquarius.oceanprotocol.com/'
+
   const aquarius = new Aquarius(config.metadataCacheUri)
 
   console.log(`Aquarius URL: ${config.metadataCacheUri}`)
@@ -99,7 +101,11 @@ async function main() {
 
   // query aquarius
   const searchQuery: SearchQuery = {
-    query: {}
+    query: {
+      query_string: {
+        query: "*"
+      }
+    }
   }
   const search = await aquarius.querySearch(searchQuery)
   console.log(search)
