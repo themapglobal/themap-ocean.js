@@ -1,8 +1,13 @@
-import { configHelperNetworks, ConfigHelper, Aquarius, SearchQuery } from '@oceanprotocol/lib'
-import Web3 from 'web3';
+import {
+  configHelperNetworks,
+  ConfigHelper,
+  Aquarius,
+  SearchQuery
+} from '@oceanprotocol/lib'
+import Web3 from 'web3'
 import fs from 'fs'
 import { homedir } from 'os'
-import { INBOUND_KEY, NodeFactory, OUTBOUND_KEY } from './themap';
+import { INBOUND_KEY, NodeFactory, OUTBOUND_KEY } from './themap'
 
 const web3 = new Web3(process.env.NODE_URI || configHelperNetworks[1].nodeUri)
 
@@ -45,7 +50,7 @@ async function main() {
 
   // get the address of the deployed contracts
   const addresses = getAddresses()
-  
+
   // create new nodes using the node factory
   const nodeFactory = new NodeFactory(addresses.ERC721Factory, config)
 
@@ -85,7 +90,10 @@ async function main() {
   console.log(`project.${OUTBOUND_KEY}: ${await projectY.getNodeData(OUTBOUND_KEY)}`)
 
   console.log('------------------------------------------------')
-  const projectPyscript = await nodeFactory.newProject('Project: Pyscript', publisherAccount)
+  const projectPyscript = await nodeFactory.newProject(
+    'Project: Pyscript',
+    publisherAccount
+  )
   await projectPyscript.addInboundNode(publisherAccount, goalPyWasm)
   await projectPyscript.addOutboundNode(publisherAccount, goalPyBrowser)
   await projectPyscript.addOutboundNode(publisherAccount, projectY)
@@ -93,7 +101,9 @@ async function main() {
   console.log(`project.name: ${await projectPyscript.name()}`)
   console.log(`project.address: ${projectPyscript.nftAddress}`)
   console.log(`project.${INBOUND_KEY}: ${await projectPyscript.getNodeData(INBOUND_KEY)}`)
-  console.log(`project.${OUTBOUND_KEY}: ${await projectPyscript.getNodeData(OUTBOUND_KEY)}`)
+  console.log(
+    `project.${OUTBOUND_KEY}: ${await projectPyscript.getNodeData(OUTBOUND_KEY)}`
+  )
 
   // test set metadata
   await projectPyscript.setNodeData(publisherAccount, 'testKey', 'testValue')
@@ -103,7 +113,7 @@ async function main() {
   const searchQuery: SearchQuery = {
     query: {
       query_string: {
-        query: "*"
+        query: '*'
       }
     }
   }
@@ -113,7 +123,7 @@ async function main() {
 
 main()
   .then(() => process.exit(0))
-  .catch(error => {
+  .catch((error) => {
     console.error(error)
     process.exit(1)
-  });
+  })

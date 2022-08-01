@@ -7,8 +7,7 @@ import {
   Nft,
   setContractDefaults
 } from '@oceanprotocol/lib'
-import { AbiItem } from 'web3-utils';
-import Web3 from 'web3';
+import Web3 from 'web3'
 
 export const INBOUND_KEY = 'inbound_addrs'
 export const OUTBOUND_KEY = 'outbound_addrs'
@@ -51,7 +50,7 @@ export class Node extends Nft {
   public async addInboundNode(account: string, node: Node): Promise<void> {
     await this.addInboundAddr(account, node.nftAddress)
   }
-  
+
   public async addInboundAddr(account: string, nodeAddress: string): Promise<void> {
     await this._addAddr(account, INBOUND_KEY, nodeAddress)
   }
@@ -65,7 +64,7 @@ export class Node extends Nft {
   public async addOutboundNode(account: string, node: Node): Promise<void> {
     await this.addOutboundAddr(account, node.nftAddress)
   }
-  
+
   public async addOutboundAddr(account: string, nodeAddress: string): Promise<void> {
     await this._addAddr(account, OUTBOUND_KEY, nodeAddress)
   }
@@ -110,13 +109,7 @@ export class NodeFactory {
     this.config = config || new ConfigHelper().getConfig(network || 'unknown')
     this.network = network
 
-    this.factory = new NftFactory(
-      nftFactoryAddres,
-      this.web3,
-      network,
-      null,
-      this.config
-    )
+    this.factory = new NftFactory(nftFactoryAddres, this.web3, network, null, this.config)
   }
 
   public async newGoal(name: string, account: string): Promise<Node> {
@@ -142,13 +135,13 @@ export class NodeFactory {
     const nftAddress = await this.factory.createNFT(account, nftParamsAsset)
 
     const node = new Node(nftAddress, this.web3, this.network, this.config)
-    await node.setNodeData(account, INBOUND_KEY, "")
-    await node.setNodeData(account, OUTBOUND_KEY, "")
+    await node.setNodeData(account, INBOUND_KEY, '')
+    await node.setNodeData(account, OUTBOUND_KEY, '')
     return node
   }
 
   private _randomNumber(): string {
     const random = Math.floor(Math.random() * 9999)
-    return String(random).padStart(4, '0');
+    return String(random).padStart(4, '0')
   }
 }
