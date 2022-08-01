@@ -20,7 +20,7 @@
     "format": "prettier --parser typescript --ignore-path .gitignore --write '**/*.{js,jsx,ts,tsx}'",
     "type-check": "tsc --noEmit",
     "run": "ts-node",
-    "prepublishOnly": "npm run build",
+    "prepare": "npm run build",
     "mocha": "TS_NODE_PROJECT='./test/tsconfig.json' mocha --config=test/.mocharc.json --node-env=test --exit",
     "test": "npm run mocha -- 'test/**/*.test.ts'"
   },
