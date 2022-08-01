@@ -9,21 +9,17 @@
       "dom"
     ],
     "declaration": true,
-    "module": "commonjs",
+    "module": "ESNext",
     "target": "ESNext",
     "removeComments": false,
     "experimentalDecorators": true,
     "preserveConstEnums": true,
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "outDir": "./dist/",
     "sourceMap": true,
-    "declarationDir": "./dist"
+    "declarationDir": "./dist/"
   },
   "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "test/**/*",
-    "node_modules"
+    "src/**/*",
+    "test/**/*"
   ]
 }
