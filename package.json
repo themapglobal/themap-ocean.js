@@ -1,5 +1,5 @@
 {
-  "name": "themap-ocean",
+  "name": "themap-ocean.js",
   "version": "1.0.0",
   "description": "Connection between The Map and ocean.js library",
   "main": "src/index.ts",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/miquelcabot/themap-ocean.js.git"
+    "url": "git+https://github.com/themapglobal/themap-ocean.js.git"
   },
-  "author": "Miquel A. Cabot",
-  "license": "MIT",
+  "author": "Ocean Protocol",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/miquelcabot/themap-ocean.js/issues"
+    "url": "https://github.com/themapglobal/themap-ocean.js/issues"
   },
-  "homepage": "https://github.com/miquelcabot/themap-ocean.js#readme",
+  "homepage": "https://github.com/themapglobal/themap-ocean.js#readme",
   "dependencies": {
     "@oceanprotocol/lib": "^1.1.6",
     "@types/node": "^18.0.6",
