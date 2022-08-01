@@ -124,8 +124,8 @@ export class NodeFactory {
 
   private async _newNode(symbol: string, name: string, account: string): Promise<Node> {
     const nftParamsAsset: NftCreateData = {
-      name: name,
-      symbol: symbol,
+      name,
+      symbol,
       templateIndex: 1,
       tokenURI: 'https://oceanprotocol.com/nft/',
       transferable: true,
