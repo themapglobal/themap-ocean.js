@@ -1,8 +1,8 @@
-import { Aquarius, Config, ConfigHelper, SearchQuery } from '@oceanprotocol/lib'
+import { Aquarius, Config, ConfigHelper } from '@oceanprotocol/lib'
 import { web3 } from './web3'
 
 export class NodeSearch {
-  async querySearch(config: Config, query: SearchQuery, signal?: AbortSignal) {
+  async querySearch(config: Config, query: any, signal?: AbortSignal) {
     const aquarius = new Aquarius(config.metadataCacheUri)
 
     const path = aquarius.aquariusURL + '/api/aquarius/assets/query'
@@ -31,7 +31,7 @@ export class NodeSearch {
     const chainId: number = await web3.eth.getChainId()
     const config: Config = new ConfigHelper().getConfig(chainId)
 
-    const searchQuery: SearchQuery = {
+    const searchQuery = {
       query: {
         bool: {
           must: [
