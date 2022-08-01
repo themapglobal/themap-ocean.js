@@ -1302,10 +1302,9 @@
   resolved "https://registry.yarnpkg.com/@oceanprotocol/contracts/-/contracts-1.0.0.tgz#54b68a89ca3549ed73202c85eac5d1a8902bbe14"
   integrity sha512-rDCIooe1WHipLejuGhx2Wv/88SB7bWrN3+XHCWxXyPKTmmSQsgxKZPPzbIVBQ0ESChQZqGSBBJyqErqwwW4eBw==
 
-"@oceanprotocol/lib@^1.1.6":
+"@oceanprotocol/lib@https://github.com/miquelcabot/ocean.js.git#main":
   version "1.1.6"
-  resolved "https://registry.yarnpkg.com/@oceanprotocol/lib/-/lib-1.1.6.tgz#98c4dd453628593ef109bd5ecd25571bbe3815dc"
-  integrity sha512-n1ync5LYBjJDg9Znq61zajnkeXFeFGOU8dN2LCeewArljCOdfYW/SEgQtiLALQb1dgqsYSjMHym40O2jPTUxoQ==
+  resolved "https://github.com/miquelcabot/ocean.js.git#3dd3aa7b5fdcb5c8b70e6f925c1dcdbc1c5788a0"
   dependencies:
     "@oceanprotocol/contracts" "^1.0.0"
     bignumber.js "^9.0.2"

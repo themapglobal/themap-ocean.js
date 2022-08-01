@@ -11,7 +11,7 @@
   },
   "types": "./dist/src/index.d.ts",
   "scripts": {
-    "start": "npm run clean && && tsc -w",
+    "start": "npm run clean && tsc -w",
     "build": "npm run clean && microbundle build --format modern,esm,cjs,umd --compress --tsconfig tsconfig.json",
     "build:tsc": "tsc --sourceMap",
     "clean": "rm -rf ./dist/",
@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/themapglobal/themap-ocean.js#readme",
   "dependencies": {
-    "@oceanprotocol/lib": "^1.1.6",
+    "@oceanprotocol/lib": "https://github.com/miquelcabot/ocean.js.git#main",
     "web3": "^1.7.4"
   },
   "devDependencies": {
