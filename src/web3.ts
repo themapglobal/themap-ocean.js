@@ -1,3 +1,4 @@
+import { configHelperNetworks } from '@oceanprotocol/lib'
 import Web3 from 'web3'
 
 let web3: Web3
@@ -10,8 +11,11 @@ declare global {
   }
 }
 
-if (window.web3) {
+if (typeof window !== 'undefined' && window.web3) {
   web3 = new Web3(window.web3.currentProvider)
+} else {
+  // if we are not in the browser, or the user is not running metamask
+  web3 = new Web3(process.env.NODE_URI || configHelperNetworks[1].nodeUri)
 }
 
 /*
@@ -19,25 +23,27 @@ https://medium.com/@parag.chirde/building-a-dapp-on-ethereum-with-vuejs-and-soli
 
 https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8
  */
-window.addEventListener('load', async () => {
-  // Modern dapp browsers...
-  if (window.ethereum) {
-    window.web3 = new Web3(window.ethereum)
-    try {
-      // Request account access if needed
-      await window.ethereum.enable()
-    } catch (error) {
-      alert('User denied account access...')
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', async () => {
+    // Modern dapp browsers...
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum)
+      try {
+        // Request account access if needed
+        await window.ethereum.enable()
+      } catch (error) {
+        alert('User denied account access...')
+      }
     }
-  }
-  // Legacy dapp browsers...
-  else if (window.web3) {
-    window.web3 = new Web3(web3.currentProvider)
-  }
-  // Non-dapp browsers...
-  else {
-    alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-  }
-})
+    // Legacy dapp browsers...
+    else if (window.web3) {
+      window.web3 = new Web3(web3.currentProvider)
+    }
+    // Non-dapp browsers...
+    else {
+      alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
+    }
+  })
+}
 
 export { web3 }
