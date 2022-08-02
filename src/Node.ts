@@ -5,7 +5,7 @@ export const INBOUND_KEY = 'inbound_addrs'
 export const OUTBOUND_KEY = 'outbound_addrs'
 
 export class Node extends Nft {
-  private nftAddress: string
+  public nftAddress: string
 
   constructor(
     nftAddress: string,
