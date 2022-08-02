@@ -77,8 +77,7 @@ export class Node extends Nft {
   }
 
   public async setNodeData(account: string, key: string, value: string): Promise<void> {
-    // TODO: call oceanprotocol/lib function setData()
-    // await this.setData(this.nftAddress, account, key, value)
+    await this.setData(this.nftAddress, account, key, value)
   }
 
   public async getNodeData(key: string): Promise<string> {
