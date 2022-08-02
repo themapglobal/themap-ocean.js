@@ -1,67 +1,20 @@
-import {
-  configHelperNetworks,
-  ConfigHelper,
-  Aquarius,
-  SearchQuery
-} from '@oceanprotocol/lib'
-import Web3 from 'web3'
-import fs from 'fs'
-import { homedir } from 'os'
 import { INBOUND_KEY, NodeFactory, OUTBOUND_KEY } from '../src'
-
-const web3 = new Web3(process.env.NODE_URI || configHelperNetworks[1].nodeUri)
-
-const getTestConfig = async (web3: Web3) => {
-  const config = new ConfigHelper().getConfig(await web3.eth.getChainId())
-  config.providerUri = process.env.PROVIDER_URL || config.providerUri
-  return config
-}
-
-const getAddresses = () => {
-  const data = JSON.parse(
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    fs.readFileSync(
-      process.env.ADDRESS_FILE ||
-        `${homedir}/.ocean/ocean-contracts/artifacts/address.json`,
-      'utf8'
-    )
-  )
-  return data.development
-}
 
 describe('Test themap-ocean.js library', () => {
   it('general test', async () => {
-    // load the configuration
-    const config = await getTestConfig(web3)
-    config.metadataCacheUri = 'https://v4.aquarius.oceanprotocol.com/'
-
-    const aquarius = new Aquarius(config.metadataCacheUri)
-
-    console.log(`Aquarius URL: ${config.metadataCacheUri}`)
-    console.log(`Provider URL: ${config.providerUri}`)
-
-    // initialize accounts
-    const accounts = await web3.eth.getAccounts()
-    const publisherAccount = accounts[0]
-
-    console.log(`Publisher account address: ${publisherAccount}`)
-
-    // get the address of the deployed contracts
-    const addresses = getAddresses()
-
     // create new nodes using the node factory
-    const nodeFactory = new NodeFactory(addresses.ERC721Factory, config)
+    const nodeFactory = new NodeFactory()
 
     console.log('------------------------------------------------')
-    const goalPyWasm = await nodeFactory.newGoal('Py run on WASM', publisherAccount)
+    const goalPyWasm = await nodeFactory.newGoal('Py run on WASM')
     console.log(`goal.symbol: ${await goalPyWasm.symbol()}`)
     console.log(`goal.name: ${await goalPyWasm.name()}`)
     console.log(`goal.address: ${goalPyWasm.nftAddress}`)
     console.log(`goal.${INBOUND_KEY}: ${await goalPyWasm.getNodeData(INBOUND_KEY)}`)
     console.log(`goal.${OUTBOUND_KEY}: ${await goalPyWasm.getNodeData(OUTBOUND_KEY)}`)
-
+    /*
     console.log('------------------------------------------------')
-    const goalPyBrowser = await nodeFactory.newGoal('Py run in browser', publisherAccount)
+    const goalPyBrowser = await nodeFactory.newGoal('Py run in browser')
     await goalPyBrowser.addInboundNode(publisherAccount, goalPyWasm)
     console.log(`goal.symbol: ${await goalPyBrowser.symbol()}`)
     console.log(`goal.name: ${await goalPyBrowser.name()}`)
@@ -70,7 +23,7 @@ describe('Test themap-ocean.js library', () => {
     console.log(`goal.${OUTBOUND_KEY}: ${await goalPyBrowser.getNodeData(OUTBOUND_KEY)}`)
 
     console.log('------------------------------------------------')
-    const projectX = await nodeFactory.newProject('Proj.: X', publisherAccount)
+    const projectX = await nodeFactory.newProject('Proj.: X')
     await projectX.addOutboundNode(publisherAccount, goalPyBrowser)
     console.log(`project.symbol: ${await projectX.symbol()}`)
     console.log(`project.name: ${await projectX.name()}`)
@@ -79,7 +32,7 @@ describe('Test themap-ocean.js library', () => {
     console.log(`project.${OUTBOUND_KEY}: ${await projectX.getNodeData(OUTBOUND_KEY)}`)
 
     console.log('------------------------------------------------')
-    const projectY = await nodeFactory.newProject('Proj.: Y', publisherAccount)
+    const projectY = await nodeFactory.newProject('Proj.: Y')
     await projectY.addOutboundNode(publisherAccount, goalPyBrowser)
     console.log(`project.symbol: ${await projectY.symbol()}`)
     console.log(`project.name: ${await projectY.name()}`)
@@ -88,10 +41,7 @@ describe('Test themap-ocean.js library', () => {
     console.log(`project.${OUTBOUND_KEY}: ${await projectY.getNodeData(OUTBOUND_KEY)}`)
 
     console.log('------------------------------------------------')
-    const projectPyscript = await nodeFactory.newProject(
-      'Project: Pyscript',
-      publisherAccount
-    )
+    const projectPyscript = await nodeFactory.newProject('Project: Pyscript')
     await projectPyscript.addInboundNode(publisherAccount, goalPyWasm)
     await projectPyscript.addOutboundNode(publisherAccount, goalPyBrowser)
     await projectPyscript.addOutboundNode(publisherAccount, projectY)
@@ -119,5 +69,6 @@ describe('Test themap-ocean.js library', () => {
     }
     const search = await aquarius.querySearch(searchQuery)
     console.log(search)
+    */
   })
 })
