@@ -8,9 +8,23 @@ import {
   NftFactory,
   ProviderInstance
 } from '@oceanprotocol/lib'
+import fs from 'fs'
+import { homedir } from 'os'
 import { INBOUND_KEY, Node, OUTBOUND_KEY } from './Node'
 import { getCurrentAccount } from './utils'
 import { web3 } from './web3'
+
+const getAddresses = () => {
+  const data = JSON.parse(
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    fs.readFileSync(
+      process.env.ADDRESS_FILE ||
+        `${homedir}/.ocean/ocean-contracts/artifacts/address.json`,
+      'utf8'
+    )
+  )
+  return data.development
+}
 
 export class NodeFactory {
   public async newGoal(name: string): Promise<Node> {
@@ -26,7 +40,10 @@ export class NodeFactory {
   private async _newNode(symbol: string, name: string): Promise<Node> {
     const chainId: number = await web3.eth.getChainId()
     const config: Config = new ConfigHelper().getConfig(chainId)
-    const factory: NftFactory = new NftFactory(config.erc721FactoryAddress, web3)
+    const factory: NftFactory = new NftFactory(
+      config.erc721FactoryAddress || getAddresses().ERC721Factory,
+      web3
+    )
     // get Metamask account
     const account: string = await getCurrentAccount()
 
