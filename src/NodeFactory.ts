@@ -4,6 +4,7 @@ import {
   ConfigHelper,
   DDO,
   generateDid,
+  getHash,
   Nft,
   NftFactory,
   ProviderInstance
@@ -58,6 +59,43 @@ export class NodeFactory {
     }
     const nftAddress = await factory.createNFT(account, nftParamsAsset)
 
+    const ddo = this._getDdoData(chainId, nftAddress, symbol, name)
+
+    // encrypt ddo with provider service
+    console.log(`Provider service URL: ${config.providerUri}`)
+    const providerResponse = await ProviderInstance.encrypt(ddo, config.providerUri)
+    const encryptedResponse = await providerResponse
+
+    // set ddo metadata on nft
+    const nft: Nft = new Nft(web3)
+    await nft.setMetadata(
+      nftAddress,
+      account,
+      0,
+      config.providerUri,
+      '',
+      '0x2',
+      encryptedResponse,
+      '0x' + getHash(JSON.stringify(ddo))
+    )
+
+    console.log(`Aquarius service URL: ${config.metadataCacheUri}`)
+    const aquarius = new Aquarius(config.metadataCacheUri)
+    const resolvedDDO = await aquarius.waitForAqua(ddo.id)
+    console.log(resolvedDDO)
+
+    const node = new Node(nftAddress, web3, chainId, config)
+    await node.setNodeData(account, INBOUND_KEY, '')
+    await node.setNodeData(account, OUTBOUND_KEY, '')
+    return node
+  }
+
+  private _getDdoData(
+    chainId: number,
+    nftAddress: string,
+    symbol: string,
+    name: string
+  ): DDO {
     // set ddo metadata
     const ddo: DDO = {
       '@context': ['https://w3id.org/did/v1'],
@@ -87,41 +125,7 @@ export class NodeFactory {
       ]
     }
     console.log(ddo)
-
-    // encrypt ddo with provider service
-    console.log(`Provider service URL: ${config.providerUri}`)
-    const providerResponse = await ProviderInstance.encrypt(ddo, config.providerUri)
-    const encryptedResponse = await providerResponse
-
-    // validate ddo with aquarius service
-    console.log(`Aquarius service URL: ${config.metadataCacheUri}`)
-    const aquarius = new Aquarius(config.metadataCacheUri)
-    const validateResult = await aquarius.validate(ddo)
-    if (!validateResult.valid) {
-      throw new Error('Could not validate metadata')
-    }
-
-    // set ddo metadata on nft
-    const nft: Nft = new Nft(web3)
-    await nft.setMetadata(
-      nftAddress,
-      account,
-      0,
-      config.providerUri,
-      '',
-      '0x2',
-      encryptedResponse,
-      validateResult.hash // '0x' + getHash(JSON.stringify(ddo))
-    )
-
-    // const aquarius = new Aquarius(config.metadataCacheUri)
-    const resolvedDDO = await aquarius.waitForAqua(ddo.id)
-    console.log(resolvedDDO)
-
-    const node = new Node(nftAddress, web3, chainId, config)
-    await node.setNodeData(account, INBOUND_KEY, '')
-    await node.setNodeData(account, OUTBOUND_KEY, '')
-    return node
+    return ddo
   }
 
   private _randomNumber(): string {
