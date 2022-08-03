@@ -19,8 +19,8 @@ export class Node extends Nft {
   }
 
   public async initialize(): Promise<void> {
-    await this.setNodeData(INBOUND_KEY, '')
-    await this.setNodeData(OUTBOUND_KEY, '')
+    await this._setNodeData(INBOUND_KEY, '')
+    await this._setNodeData(OUTBOUND_KEY, '')
   }
 
   public async name(): Promise<string> {
@@ -70,26 +70,26 @@ export class Node extends Nft {
   // ==== helpers ====
 
   private async _getAddrs(key: string): Promise<string[]> {
-    const s = await this.getNodeData(key)
+    const s = await this._getNodeData(key)
     return s.split(' ')
   }
 
   private async _addAddr(key: string, value: string): Promise<void> {
-    const s = await this.getNodeData(key)
+    const s = await this._getNodeData(key)
     if (s.includes(value)) {
       throw new Error(`${value} already exists in ${key}`)
     }
-    await this.setNodeData(key, `${s} ${value}`)
+    await this._setNodeData(key, `${s} ${value}`)
   }
 
-  public async setNodeData(key: string, value: string): Promise<void> {
+  private async _setNodeData(key: string, value: string): Promise<void> {
     // get Metamask account
     const account = await getCurrentAccount()
 
     await this.setData(this.nftAddress, account, key, value)
   }
 
-  public async getNodeData(key: string): Promise<string> {
+  private async _getNodeData(key: string): Promise<string> {
     return await this.getData(this.nftAddress, key)
   }
 }
