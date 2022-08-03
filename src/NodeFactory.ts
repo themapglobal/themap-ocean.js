@@ -11,7 +11,7 @@ import {
 } from '@oceanprotocol/lib'
 import fs from 'fs'
 import { homedir } from 'os'
-import { INBOUND_KEY, Node, OUTBOUND_KEY } from './Node'
+import { Node } from './Node'
 import { getCurrentAccount } from './utils'
 import { web3 } from './web3'
 
