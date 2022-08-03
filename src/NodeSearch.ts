@@ -2,7 +2,7 @@ import { Aquarius, Config, ConfigHelper } from '@oceanprotocol/lib'
 import { web3 } from './web3'
 
 export class NodeSearch {
-  async querySearch(config: Config, query: any, signal?: AbortSignal) {
+  public async querySearch(config: Config, query: any, signal?: AbortSignal) {
     const aquarius = new Aquarius(config.metadataCacheUri)
 
     const path = aquarius.aquariusURL + '/api/aquarius/assets/query'
@@ -27,9 +27,21 @@ export class NodeSearch {
     }
   }
 
-  async search() {
+  public async search(searchQuery: any) {
     const chainId: number = await web3.eth.getChainId()
     const config: Config = new ConfigHelper().getConfig(chainId)
+
+    const nodes = await this.querySearch(config, searchQuery)
+    if (nodes.hits && nodes.hits.hits) {
+      // return nodes.hits.hits.map(hit => hit._source)
+      nodes.hits.hits.map((hit) => console.log(hit._source))
+    }
+
+    console.log(nodes)
+  }
+
+  public async searchTest() {
+    const chainId: number = await web3.eth.getChainId()
 
     const searchQuery = {
       query: {
@@ -66,12 +78,6 @@ export class NodeSearch {
       size: 10000
     }
 
-    const nodes = await this.querySearch(config, searchQuery)
-    if (nodes.hits && nodes.hits.hits) {
-      // return nodes.hits.hits.map(hit => hit._source)
-      nodes.hits.hits.map((hit) => console.log(hit._source))
-    }
-
-    console.log(nodes)
+    await this.search(searchQuery)
   }
 }
