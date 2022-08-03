@@ -18,6 +18,11 @@ export class Node extends Nft {
     this.nftAddress = nftAddress
   }
 
+  public async initialize(): Promise<void> {
+    await this.setNodeData(INBOUND_KEY, '')
+    await this.setNodeData(OUTBOUND_KEY, '')
+  }
+
   public async name(): Promise<string> {
     const nftContract = setContractDefaults(
       new this.web3.eth.Contract(this.nftAbi, this.nftAddress),
