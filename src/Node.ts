@@ -1,5 +1,6 @@
 import { Config, Nft, setContractDefaults } from '@oceanprotocol/lib'
 import Web3 from 'web3'
+import { getCurrentAccount } from './utils'
 
 export const INBOUND_KEY = 'inbound_addrs'
 export const OUTBOUND_KEY = 'outbound_addrs'
@@ -39,12 +40,12 @@ export class Node extends Nft {
     return await this._getAddrs(INBOUND_KEY)
   }
 
-  public async addInboundNode(account: string, node: Node): Promise<void> {
-    await this.addInboundAddr(account, node.nftAddress)
+  public async addInboundNode(node: Node): Promise<void> {
+    await this.addInboundAddr(node.nftAddress)
   }
 
-  public async addInboundAddr(account: string, nodeAddress: string): Promise<void> {
-    await this._addAddr(account, INBOUND_KEY, nodeAddress)
+  public async addInboundAddr(nodeAddress: string): Promise<void> {
+    await this._addAddr(INBOUND_KEY, nodeAddress)
   }
 
   // ==== outbounds ====
@@ -53,30 +54,33 @@ export class Node extends Nft {
     return await this._getAddrs(OUTBOUND_KEY)
   }
 
-  public async addOutboundNode(account: string, node: Node): Promise<void> {
-    await this.addOutboundAddr(account, node.nftAddress)
+  public async addOutboundNode(node: Node): Promise<void> {
+    await this.addOutboundAddr(node.nftAddress)
   }
 
-  public async addOutboundAddr(account: string, nodeAddress: string): Promise<void> {
-    await this._addAddr(account, OUTBOUND_KEY, nodeAddress)
+  public async addOutboundAddr(nodeAddress: string): Promise<void> {
+    await this._addAddr(OUTBOUND_KEY, nodeAddress)
   }
 
   // ==== helpers ====
 
-  public async _getAddrs(key: string): Promise<string[]> {
+  private async _getAddrs(key: string): Promise<string[]> {
     const s = await this.getNodeData(key)
     return s.split(' ')
   }
 
-  public async _addAddr(account: string, key: string, value: string): Promise<void> {
+  private async _addAddr(key: string, value: string): Promise<void> {
     const s = await this.getNodeData(key)
     if (s.includes(value)) {
       throw new Error(`${value} already exists in ${key}`)
     }
-    await this.setNodeData(account, key, `${s} ${value}`)
+    await this.setNodeData(key, `${s} ${value}`)
   }
 
-  public async setNodeData(account: string, key: string, value: string): Promise<void> {
+  public async setNodeData(key: string, value: string): Promise<void> {
+    // get Metamask account
+    const account = await getCurrentAccount()
+
     await this.setData(this.nftAddress, account, key, value)
   }
 

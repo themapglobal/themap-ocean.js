@@ -46,7 +46,7 @@ export class NodeFactory {
       web3
     )
     // get Metamask account
-    const account: string = await getCurrentAccount()
+    const account = await getCurrentAccount()
 
     // create new nft
     const nftParamsAsset = {
@@ -85,8 +85,8 @@ export class NodeFactory {
     console.log(resolvedDDO)
 
     const node = new Node(nftAddress, web3, chainId, config)
-    await node.setNodeData(account, INBOUND_KEY, '')
-    await node.setNodeData(account, OUTBOUND_KEY, '')
+    await node.setNodeData(INBOUND_KEY, '')
+    await node.setNodeData(OUTBOUND_KEY, '')
     return node
   }
 
