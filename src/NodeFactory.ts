@@ -62,6 +62,7 @@ export class NodeFactory {
     const ddo = this._getDdoData(chainId, nftAddress, symbol, name)
 
     // encrypt ddo with provider service
+    // config.providerUri = 'http://127.0.0.:8030'
     console.log(`Provider service URL: ${config.providerUri}`)
     const providerResponse = await ProviderInstance.encrypt(ddo, config.providerUri)
     const encryptedResponse = await providerResponse

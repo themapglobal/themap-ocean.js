@@ -31,7 +31,9 @@ export class NodeSearch {
     const chainId: number = await web3.eth.getChainId()
     const config: Config = new ConfigHelper().getConfig(chainId)
 
-    const nodes = await this.querySearch(config, searchQuery)
+    const aquarius = new Aquarius(config.metadataCacheUri)
+
+    const nodes = await aquarius.querySearch(searchQuery)
     if (nodes.hits && nodes.hits.hits) {
       // return nodes.hits.hits.map(hit => hit._source)
       nodes.hits.hits.map((hit) => console.log(hit._source))
