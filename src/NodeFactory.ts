@@ -112,9 +112,9 @@ export class NodeFactory {
     )
 
     // console.log(`Aquarius service URL: ${config.metadataCacheUri}`)
-    const aquarius = new Aquarius(config.metadataCacheUri)
-    const resolvedDDO = await aquarius.waitForAqua(ddo.id)
-    console.log(resolvedDDO)
+    // const aquarius = new Aquarius(config.metadataCacheUri)
+    // const resolvedDDO = await aquarius.waitForAqua(ddo.id)
+    // console.log(resolvedDDO)
 
     const node = new Node(nftAddress, web3, chainId, config)
     await node.initialize()
