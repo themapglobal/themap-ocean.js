@@ -64,7 +64,7 @@ export class NodeFactory {
 
     const erc20Params: Erc20CreateParams = {
       templateIndex: 1,
-      cap: '0',
+      cap: '1',
       feeAmount: '0',
       paymentCollector: ZERO_ADDRESS,
       feeToken: ZERO_ADDRESS,
