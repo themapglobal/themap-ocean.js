@@ -1,5 +1,8 @@
 import { configHelperNetworks } from '@oceanprotocol/lib'
 import Web3 from 'web3'
+import { config as dotenvConfig } from 'dotenv'
+import { resolve } from 'path'
+dotenvConfig({ path: resolve(__dirname, '../.env') })
 
 let web3: Web3
 
@@ -15,6 +18,9 @@ if (typeof window !== 'undefined' && window.web3) {
   web3 = new Web3(window.web3.currentProvider)
 } else {
   // if we are not in the browser, or the user is not running metamask
+  console.log(resolve(__dirname, '../.env'))
+  console.log(process.env.NODE_URI)
+  console.log(configHelperNetworks[1].nodeUri)
   web3 = new Web3(process.env.NODE_URI || configHelperNetworks[1].nodeUri)
 }
 
