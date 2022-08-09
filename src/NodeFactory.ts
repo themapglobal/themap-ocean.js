@@ -94,7 +94,7 @@ export class NodeFactory {
 
     // encrypt ddo with provider service
     // config.providerUri = 'http://127.0.0.:8030'
-    console.log(`Provider service URL: ${config.providerUri}`)
+    // console.log(`Provider service URL: ${config.providerUri}`)
     const providerResponse = await ProviderInstance.encrypt(ddo, config.providerUri)
     const encryptedResponse = await providerResponse
 
@@ -111,7 +111,7 @@ export class NodeFactory {
       '0x' + getHash(JSON.stringify(ddo))
     )
 
-    console.log(`Aquarius service URL: ${config.metadataCacheUri}`)
+    // console.log(`Aquarius service URL: ${config.metadataCacheUri}`)
     const aquarius = new Aquarius(config.metadataCacheUri)
     const resolvedDDO = await aquarius.waitForAqua(ddo.id)
     console.log(resolvedDDO)
