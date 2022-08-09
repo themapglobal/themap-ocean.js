@@ -3,11 +3,15 @@ import {
   Config,
   ConfigHelper,
   DDO,
+  DispenserCreationParams,
+  Erc20CreateParams,
   generateDid,
   getHash,
   Nft,
+  NftCreateData,
   NftFactory,
-  ProviderInstance
+  ProviderInstance,
+  ZERO_ADDRESS
 } from '@oceanprotocol/lib'
 import fs from 'fs'
 import { homedir } from 'os'
@@ -49,7 +53,7 @@ export class NodeFactory {
     const account = await getCurrentAccount()
 
     // create new nft
-    const nftParamsAsset = {
+    const nftParams: NftCreateData = {
       name,
       symbol,
       templateIndex: 1,
@@ -57,9 +61,36 @@ export class NodeFactory {
       transferable: true,
       owner: account
     }
-    const nftAddress = await factory.createNFT(account, nftParamsAsset)
 
-    const ddo = this._getDdoData(chainId, nftAddress, symbol, name)
+    const erc20Params: Erc20CreateParams = {
+      templateIndex: 1,
+      cap: '0',
+      feeAmount: '0',
+      paymentCollector: ZERO_ADDRESS,
+      feeToken: ZERO_ADDRESS,
+      minter: account,
+      mpFeeAddress: ZERO_ADDRESS
+    }
+
+    const dispenserParams: DispenserCreationParams = {
+      dispenserAddress: config.dispenserAddress || getAddresses().Dispenser,
+      maxTokens: '1',
+      maxBalance: '1',
+      withMint: true,
+      allowedSwapper: ZERO_ADDRESS
+    }
+
+    const tx = await factory.createNftErc20WithDispenser(
+      account,
+      nftParams,
+      erc20Params,
+      dispenserParams
+    )
+
+    const nftAddress = tx.events.NFTCreated.returnValues[0]
+    const datatokenAddress = tx.events.TokenCreated.returnValues[0]
+
+    const ddo = this._getDdoData(chainId, nftAddress, datatokenAddress, symbol, name)
 
     // encrypt ddo with provider service
     // config.providerUri = 'http://127.0.0.:8030'
@@ -93,6 +124,7 @@ export class NodeFactory {
   private _getDdoData(
     chainId: number,
     nftAddress: string,
+    datatokenAddress: string,
     symbol: string,
     name: string
   ): DDO {
@@ -118,7 +150,7 @@ export class NodeFactory {
           id: 'testFakeId',
           type: 'access',
           files: '',
-          datatokenAddress: '0x0',
+          datatokenAddress,
           serviceEndpoint: 'https://v4.provider.rinkeby.oceanprotocol.com',
           timeout: 0
         }
