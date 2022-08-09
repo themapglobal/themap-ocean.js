@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/themapglobal/themap-ocean.js#readme",
   "dependencies": {
-    "@oceanprotocol/lib": "^1.1.7",
+    "@oceanprotocol/lib": "^1.1.8",
     "web3": "^1.7.4"
   },
   "devDependencies": {
