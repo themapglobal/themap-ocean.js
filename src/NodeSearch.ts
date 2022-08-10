@@ -14,7 +14,6 @@ export class NodeSearch {
     if (nodes.hits && nodes.hits.hits) {
       // return nodes.hits.hits.map(hit => hit._source)
       nodesFound = nodes.hits.hits.map((hit) => {
-          console.log(hit._source.nftAddress)
           return new Node(hit._source.nftAddress, web3, chainId, config)
         }
       )
