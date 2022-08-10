@@ -1,23 +1,29 @@
 import { Aquarius, Config, ConfigHelper } from '@oceanprotocol/lib'
+import { Node } from './Node'
 import { web3 } from './web3'
 
 export class NodeSearch {
-  public async search(searchQuery: any) {
+  public async search(searchQuery: any): Promise<Node[]> {
     const chainId: number = await web3.eth.getChainId()
     const config: Config = new ConfigHelper().getConfig(chainId)
 
     const aquarius = new Aquarius(config.metadataCacheUri)
 
     const nodes = await aquarius.querySearch(searchQuery)
+    let nodesFound: Node[]
     if (nodes.hits && nodes.hits.hits) {
       // return nodes.hits.hits.map(hit => hit._source)
-      nodes.hits.hits.map((hit) => console.log(hit._source))
+      nodesFound = nodes.hits.hits.map((hit) => {
+          console.log(hit._source.nftAddress)
+          return new Node(hit._source.nftAddress, web3, chainId, config)
+        }
+      )
     }
 
-    console.log(nodes)
+    return nodesFound
   }
 
-  public async searchAll() {
+  public async searchAll(): Promise<Node[]> {
     const chainId: number = await web3.eth.getChainId()
 
     const searchQuery = {
@@ -45,10 +51,10 @@ export class NodeSearch {
       size: 10000
     }
 
-    await this.search(searchQuery)
+    return this.search(searchQuery)
   }
 
-  public async searchText(text: string) {
+  public async searchText(text: string): Promise<Node[]> {
     text = this.escapeESReservedChars(text)
     const emptySearchTerm = text === undefined || text === ''
 
@@ -141,7 +147,7 @@ export class NodeSearch {
       size: 10000
     }
 
-    await this.search(searchQuery)
+    return this.search(searchQuery)
   }
 
   private escapeESReservedChars(text: string): string {
