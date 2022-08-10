@@ -17,6 +17,37 @@ export class NodeSearch {
     console.log(nodes)
   }
 
+  public async searchAll() {
+    const chainId: number = await web3.eth.getChainId()
+
+    const searchQuery = {
+      query: {
+        bool: {
+          filter: [
+            {
+              terms: {
+                chainId: [chainId]
+              }
+            },
+            {
+              terms: {
+                'metadata.tags': ['themap']
+              }
+            },
+            {
+              term: {
+                'purgatory.state': false
+              }
+            }
+          ]
+        }
+      },
+      size: 10000
+    }
+
+    await this.search(searchQuery)
+  }
+
   public async searchText(text: string) {
     text = this.escapeESReservedChars(text)
     const emptySearchTerm = text === undefined || text === ''
