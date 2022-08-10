@@ -83,13 +83,6 @@ export class NodeSearch {
                       fields: searchFields,
                       default_operator: 'AND'
                     }
-                  },
-                  {
-                    query_string: {
-                      query: '(metadata.tags:"themap")',
-                      fields: ['metadata.tags'],
-                      default_operator: 'AND'
-                    }
                   }
                 ]
               }
@@ -99,6 +92,11 @@ export class NodeSearch {
             {
               terms: {
                 chainId: [chainId]
+              }
+            },
+            {
+              terms: {
+                'metadata.tags': ['themap']
               }
             },
             {
