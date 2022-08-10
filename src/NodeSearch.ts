@@ -16,45 +16,4 @@ export class NodeSearch {
 
     console.log(nodes)
   }
-
-  public async searchTest() {
-    const chainId: number = await web3.eth.getChainId()
-
-    const searchQuery = {
-      query: {
-        bool: {
-          must: [
-            {
-              bool: {
-                should: [
-                  {
-                    query_string: {
-                      query: '(metadata.tags:"themap")',
-                      fields: ['metadata.tags'],
-                      default_operator: 'AND'
-                    }
-                  }
-                ]
-              }
-            }
-          ],
-          filter: [
-            {
-              terms: {
-                chainId: [chainId]
-              }
-            },
-            {
-              term: {
-                'purgatory.state': false
-              }
-            }
-          ]
-        }
-      },
-      size: 10000
-    }
-
-    await this.search(searchQuery)
-  }
 }

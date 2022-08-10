@@ -1,7 +1,7 @@
-import { NodeFactory, NodeSearch } from '../src'
+import { NodeFactory, NodeSearch, web3 } from '../src'
 
 describe('Test themap-ocean.js library', () => {
-  it('general test', async () => {
+  it('create nodes and search', async () => {
     // create new nodes using the node factory
     const nodeFactory = new NodeFactory()
 
@@ -51,7 +51,44 @@ describe('Test themap-ocean.js library', () => {
     console.log(`project.inbound: ${await projectPyscript.getInboundAddrs()}`)
     console.log(`project.outbound: ${await projectPyscript.getOutboundAddrs()}`)
 
+    const chainId: number = await web3.eth.getChainId()
+
+    const searchQuery = {
+      query: {
+        bool: {
+          must: [
+            {
+              bool: {
+                should: [
+                  {
+                    query_string: {
+                      query: '(metadata.tags:"themap")',
+                      fields: ['metadata.tags'],
+                      default_operator: 'AND'
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          filter: [
+            {
+              terms: {
+                chainId: [chainId]
+              }
+            },
+            {
+              term: {
+                'purgatory.state': false
+              }
+            }
+          ]
+        }
+      },
+      size: 10000
+    }
+
     const nodeSearch = new NodeSearch()
-    await nodeSearch.searchTest()
+    await nodeSearch.search(searchQuery)
   })
 })
