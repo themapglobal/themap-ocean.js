@@ -115,7 +115,14 @@ export class NodeFactory {
     // const resolvedDDO = await aquarius.waitForAqua(ddo.id)
     // console.log(resolvedDDO)
 
-    const node = new Node(nftAddress, web3, chainId, config)
+    const node = new Node(
+      nftAddress,
+      web3,
+      chainId,
+      config,
+      ddo.id,
+      ddo.metadata.description
+    )
     await node.initialize()
     return node
   }
