@@ -14,9 +14,15 @@ export class NodeSearch {
     if (nodes.hits && nodes.hits.hits) {
       // return nodes.hits.hits.map(hit => hit._source)
       nodesFound = nodes.hits.hits.map((hit) => {
-          return new Node(hit._source.nftAddress, web3, chainId, config)
-        }
-      )
+        return new Node(
+          hit._source.nftAddress,
+          web3,
+          chainId,
+          config,
+          hit._source.id,
+          hit._source.metadata.description
+        )
+      })
     }
 
     return nodesFound
