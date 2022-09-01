@@ -7,15 +7,21 @@ export const OUTBOUND_KEY = 'outbound_addrs'
 
 export class Node extends Nft {
   public nftAddress: string
+  public id: string
+  public description: string
 
   constructor(
     nftAddress: string,
     web3: Web3,
     network?: string | number,
-    config?: Config
+    config?: Config,
+    id?: string,
+    description?: string
   ) {
     super(web3, network, null, config)
     this.nftAddress = nftAddress
+    this.id = id
+    this.description = description
   }
 
   public async initialize(): Promise<void> {
