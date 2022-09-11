@@ -15,7 +15,7 @@ if (typeof window !== 'undefined' && window.web3) {
   web3 = new Web3(window.web3.currentProvider)
 } else {
   // if we are not in the browser, or the user is not running metamask
-  web3 = new Web3(process.env.NODE_URI || configHelperNetworks[1].nodeUri)
+  web3 = new Web3(process.env.NODE_URI || configHelperNetworks[1].nodeUri!)
 }
 
 /*

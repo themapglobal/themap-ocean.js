@@ -86,15 +86,15 @@ export class NodeFactory {
       dispenserParams
     )
 
-    const nftAddress = tx.events.NFTCreated.returnValues[0]
-    const datatokenAddress = tx.events.TokenCreated.returnValues[0]
+    const nftAddress = tx.events?.NFTCreated.returnValues[0]
+    const datatokenAddress = tx.events?.TokenCreated.returnValues[0]
 
     const ddo = this._getDdoData(chainId, nftAddress, datatokenAddress, symbol, name)
 
     // encrypt ddo with provider service
     // config.providerUri = 'http://127.0.0.:8030'
     // console.log(`Provider service URL: ${config.providerUri}`)
-    const providerResponse = await ProviderInstance.encrypt(ddo, config.providerUri)
+    const providerResponse = await ProviderInstance.encrypt(ddo, config.providerUri!)
     const encryptedResponse = await providerResponse
 
     // set ddo metadata on nft
@@ -103,7 +103,7 @@ export class NodeFactory {
       nftAddress,
       account,
       0,
-      config.providerUri,
+      config.providerUri!,
       '',
       '0x2',
       encryptedResponse,
@@ -118,10 +118,10 @@ export class NodeFactory {
     const node = new Node(
       nftAddress,
       web3,
-      chainId,
-      config,
       ddo.id,
-      ddo.metadata.description
+      ddo.metadata.description,
+      chainId,
+      config
     )
     await node.initialize()
     return node

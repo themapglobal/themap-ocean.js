@@ -13,12 +13,12 @@ export class Node extends Nft {
   constructor(
     nftAddress: string,
     web3: Web3,
+    id: string,
+    description: string,
     network?: string | number,
-    config?: Config,
-    id?: string,
-    description?: string
+    config?: Config
   ) {
-    super(web3, network, null, config)
+    super(web3, network, undefined, config)
     this.nftAddress = nftAddress
     this.id = id
     this.description = description
