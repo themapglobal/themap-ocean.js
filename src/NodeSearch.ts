@@ -1,9 +1,10 @@
-import { Aquarius, Config, ConfigHelper } from '@oceanprotocol/lib'
+import { Aquarius, Config, ConfigHelper, generateDid } from '@oceanprotocol/lib'
 import { Node } from './Node'
 import { web3 } from './web3'
 
 export class NodeSearch {
   public async search(searchQuery: any): Promise<Node[]> {
+
     const chainId: number = await web3.eth.getChainId()
     const config: Config = new ConfigHelper().getConfig(chainId)
 
@@ -20,7 +21,7 @@ export class NodeSearch {
           chainId,
           config,
           hit._source.id,
-          hit._source.metadata.description
+          hit._source.metadata
         )
       })
     }
@@ -49,6 +50,11 @@ export class NodeSearch {
               term: {
                 'purgatory.state': false
               }
+            },
+            {
+              term: {
+                'metadata.additionalInformation.deleted': false
+              }
             }
           ]
         }
@@ -57,6 +63,25 @@ export class NodeSearch {
     }
 
     return this.search(searchQuery)
+  }
+
+  public async searchByNftAddress(addr: string): Node {
+
+    const chainId: number = await web3.eth.getChainId()
+    const config: Config = new ConfigHelper().getConfig(chainId)
+
+    const aquarius = new Aquarius(config.metadataCacheUri)
+    const response = await aquarius.resolve(generateDid(addr, chainId));
+
+    return new Node(
+      response.nftAddress,
+      web3,
+      chainId,
+      config,
+      response.id,
+      response.metadata
+    )
+
   }
 
   public async searchText(text: string): Promise<Node[]> {

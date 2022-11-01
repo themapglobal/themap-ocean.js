@@ -1,6 +1,7 @@
 import {
   Config,
   ConfigHelper,
+  Aquarius,
   DDO,
   DispenserCreationParams,
   Erc20CreateParams,
@@ -31,115 +32,149 @@ const getAddresses = () => {
 }
 
 export class NodeFactory {
-  public async newGoal(name: string): Promise<Node> {
+
+
+  public async newGoal(name: string, onProgress: Function, done: Function, onFail: Function): Promise<Node> {
     const symbol = `GOAL-${this._randomNumber()}`
-    return this._newNode(symbol, name)
+    return this._newNode(symbol, name, "goal", onProgress, done, onFail)
   }
 
-  public async newProject(name: string): Promise<Node> {
+  public async newProject(name: string, onProgress: Function, done: Function, onFail: Function): Promise<Node> {
     const symbol = `PROJ-${this._randomNumber()}`
-    return this._newNode(symbol, name)
+    return this._newNode(symbol, name, "project", onProgress, done, onFail)
   }
 
-  private async _newNode(symbol: string, name: string): Promise<Node> {
-    const chainId: number = await web3.eth.getChainId()
-    const config: Config = new ConfigHelper().getConfig(chainId)
-    const factory: NftFactory = new NftFactory(
-      config.erc721FactoryAddress || getAddresses().ERC721Factory,
-      web3
-    )
-    // get Metamask account
-    const account = await getCurrentAccount()
-
-    // create new nft
-    const nftParams: NftCreateData = {
-      name,
-      symbol,
-      templateIndex: 1,
-      tokenURI: 'https://oceanprotocol.com/nft/',
-      transferable: true,
-      owner: account
-    }
-
-    const erc20Params: Erc20CreateParams = {
-      templateIndex: 1,
-      cap: '1',
-      feeAmount: '0',
-      paymentCollector: ZERO_ADDRESS,
-      feeToken: ZERO_ADDRESS,
-      minter: account,
-      mpFeeAddress: ZERO_ADDRESS
-    }
-
-    const dispenserParams: DispenserCreationParams = {
-      dispenserAddress: config.dispenserAddress || getAddresses().Dispenser,
-      maxTokens: '1',
-      maxBalance: '1',
-      withMint: true,
-      allowedSwapper: ZERO_ADDRESS
-    }
-
-    const tx = await factory.createNftErc20WithDispenser(
-      account,
-      nftParams,
-      erc20Params,
-      dispenserParams
-    )
-
-    const nftAddress = tx.events.NFTCreated.returnValues[0]
-    const datatokenAddress = tx.events.TokenCreated.returnValues[0]
-
-    const ddo = this._getDdoData(chainId, nftAddress, datatokenAddress, symbol, name)
-
-    // encrypt ddo with provider service
-    // config.providerUri = 'http://127.0.0.:8030'
-    // console.log(`Provider service URL: ${config.providerUri}`)
-    const providerResponse = await ProviderInstance.encrypt(ddo, config.providerUri)
-    const encryptedResponse = await providerResponse
-
-    // set ddo metadata on nft
-    const nft: Nft = new Nft(web3)
-    await nft.setMetadata(
-      nftAddress,
-      account,
-      0,
-      config.providerUri,
-      '',
-      '0x2',
-      encryptedResponse,
-      '0x' + getHash(JSON.stringify(ddo))
-    )
-
-    // console.log(`Aquarius service URL: ${config.metadataCacheUri}`)
-    // const aquarius = new Aquarius(config.metadataCacheUri)
-    // const resolvedDDO = await aquarius.waitForAqua(ddo.id)
-    // console.log(resolvedDDO)
-
-    const node = new Node(
-      nftAddress,
-      web3,
-      chainId,
-      config,
-      ddo.id,
-      ddo.metadata.description
-    )
-    await node.initialize()
-    return node
-  }
-
-  private _getDdoData(
-    chainId: number,
-    nftAddress: string,
-    datatokenAddress: string,
+  private async _newNode(
     symbol: string,
-    name: string
-  ): DDO {
+    name: string,
+    type: string,
+    onProgress: Function = ()=>{},
+    done: Function = ()=>{},
+    fail: Function = ()=>{},
+  ): Promise<Node> {
+
+    try {
+
+      const chainId: number = await web3.eth.getChainId()
+      const config: Config = new ConfigHelper().getConfig(chainId)
+
+      const factory: NftFactory = new NftFactory(
+        config.erc721FactoryAddress || getAddresses().ERC721Factory,
+        web3
+      )
+
+      // get Metamask account
+      const account = await getCurrentAccount()
+
+      onProgress(0, "Web3 Account selected", { account });
+
+      // create new nft
+      const nftParams: NftCreateData = {
+        name,
+        symbol,
+        templateIndex: 1,
+        tokenURI: 'https://oceanprotocol.com/nft/',
+        transferable: true,
+        owner: account
+      }
+
+      //TODO: Needs rework
+      const erc20Params: Erc20CreateParams = {
+        templateIndex: 1,
+        cap: '1',
+        feeAmount: '0',
+        paymentCollector: ZERO_ADDRESS,
+        feeToken: ZERO_ADDRESS,
+        minter: account,
+        mpFeeAddress: ZERO_ADDRESS
+      }
+
+      const dispenserParams: DispenserCreationParams = {
+        dispenserAddress: config.dispenserAddress || getAddresses().Dispenser,
+        maxTokens: '1',
+        maxBalance: '1',
+        withMint: true,
+        allowedSwapper: ZERO_ADDRESS
+      }
+
+      onProgress(1, "Creating NFT")
+
+      const tx = await factory.createNftErc20WithDispenser(
+        account,
+        nftParams,
+        erc20Params,
+        dispenserParams
+      )
+
+
+      const nftAddress = tx.events.NFTCreated.returnValues[0]
+
+      const dataTokenAddress = tx.events.TokenCreated.returnValues[0]
+
+      onProgress(2, "NFT created", { nftAddress, dataTokenAddress, transaction: tx })
+
+      const ddo = this._getDdoData(chainId, nftAddress, dataTokenAddress, symbol, name, type)
+
+      onProgress(3, "DDO", { ddo })
+
+      const encryptedResponse = await ProviderInstance.encrypt(ddo, config.providerUri)
+
+      onProgress(4, "Provider response", { encryptedResponse })
+
+      onProgress(5, "Setting DDO in NFT as metadata", { did: generateDid(nftAddress, chainId) })
+
+      // set ddo metadata on nft
+      const nft: Nft = new Nft(web3)
+      await nft.setMetadata(
+        nftAddress,
+        account,
+        0,
+        config.providerUri,
+        '',
+        '0x2',
+        encryptedResponse,
+        '0x' + getHash(JSON.stringify(ddo))
+      )
+
+      onProgress(6, "DDO set")
+
+      const node = new Node(
+        nftAddress,
+        web3,
+        chainId,
+        config,
+        ddo.id,
+        ddo.metadata
+      )
+
+      onProgress(7, "Waiting for Aquarius")
+
+      const response = await this._waitForAqua(ddo, config)
+      onProgress(8, "Node id cached in Aquarius", { response })
+
+      return done(node)
+
+    } catch (error) {
+      fail(error);
+    }
+
+  }
+
+  private _waitForAqua(ddo: any, config: any): Promise<Any> {
+
+    const aquarius = new Aquarius(config.metadataCacheUri)
+
+    return aquarius.waitForAqua(ddo.id);
+
+  }
+
+  private _getDdoData(chainId: number, nftAddress: string, dataTokenAddress: string, symbol: string, name: string, type: string): DDO {
     // set ddo metadata
     const ddo: DDO = {
       '@context': ['https://w3id.org/did/v1'],
       id: generateDid(nftAddress, chainId),
       nftAddress,
-      version: '4.1.0',
+      version: '4.5.0',
       chainId,
       metadata: {
         created: new Date().toISOString().replace(/\.[0-9]{3}Z/, 'Z'),
@@ -149,20 +184,17 @@ export class NodeFactory {
         description: name,
         tags: ['themap'],
         author: 'TheMap',
-        license: 'https://market.oceanprotocol.com/terms'
-      },
-      services: [
-        {
-          id: 'testFakeId',
-          type: 'access',
-          files: '',
-          datatokenAddress,
-          serviceEndpoint: 'https://v4.provider.rinkeby.oceanprotocol.com',
-          timeout: 0
+        license: 'https://market.oceanprotocol.com/terms',
+        additionalInformation: {
+          inbound_addrs: "",
+          outbound_addrs: "",
+          deleted: false,
+          type
         }
-      ]
+      },
+      services: []
     }
-    console.log(ddo)
+
     return ddo
   }
 

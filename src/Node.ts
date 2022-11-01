@@ -1,14 +1,21 @@
-import { Config, Nft, setContractDefaults } from '@oceanprotocol/lib'
+import {
+  Aquarius,
+  Config,
+  ConfigHelper,
+  getHash,
+  Nft,
+  ProviderInstance,
+  setContractDefaults
+} from "@oceanprotocol/lib";
 import Web3 from 'web3'
-import { getCurrentAccount } from './utils'
-
-export const INBOUND_KEY = 'inbound_addrs'
-export const OUTBOUND_KEY = 'outbound_addrs'
+import { getCurrentAccount, isValidAddress } from './utils'
+import { web3 } from "./web3";
 
 export class Node extends Nft {
+
   public nftAddress: string
   public id: string
-  public description: string
+  public metadata: object
 
   constructor(
     nftAddress: string,
@@ -16,17 +23,14 @@ export class Node extends Nft {
     network?: string | number,
     config?: Config,
     id?: string,
-    description?: string
+    metadata?: object
   ) {
+
     super(web3, network, null, config)
     this.nftAddress = nftAddress
     this.id = id
-    this.description = description
-  }
+    this.metadata = metadata
 
-  public async initialize(): Promise<void> {
-    await this.setNodeData(INBOUND_KEY, '')
-    await this.setNodeData(OUTBOUND_KEY, '')
   }
 
   public async name(): Promise<string> {
@@ -45,57 +49,93 @@ export class Node extends Nft {
     return await nftContract.methods.symbol().call()
   }
 
-  // ==== inbounds ====
-
-  public async getInboundAddrs(): Promise<string[]> {
-    return await this._getAddrs(INBOUND_KEY)
+  public async addInboundAddress(newAddress: string): Promise<any> {
+    return this._addEdge("in", newAddress)
   }
 
-  public async addInboundNode(node: Node): Promise<void> {
-    await this.addInboundAddr(node.nftAddress)
+  public async addOutboundAddress(newAddress: string): Promise<any> {
+    return this._addEdge("out", newAddress)
   }
 
-  public async addInboundAddr(nodeAddress: string): Promise<void> {
-    await this._addAddr(INBOUND_KEY, nodeAddress)
-  }
+  private _addEdge(type: string, newAddress: string) {
 
-  // ==== outbounds ====
+    if(!isValidAddress(newAddress))
+      return Promise.reject("Invalid address!");
 
-  public async getOutboundAddrs(): Promise<string[]> {
-    return await this._getAddrs(OUTBOUND_KEY)
-  }
+    if(newAddress === this.nftAddress)
+      return Promise.reject("Node can't have edge to itself");
 
-  public async addOutboundNode(node: Node): Promise<void> {
-    await this.addOutboundAddr(node.nftAddress)
-  }
 
-  public async addOutboundAddr(nodeAddress: string): Promise<void> {
-    await this._addAddr(OUTBOUND_KEY, nodeAddress)
-  }
+    if(type === 'in') {
 
-  // ==== helpers ====
+      const inboundAddrs = this._getInboundAddress();
+      if(inboundAddrs.indexOf(newAddress) >= 0)
+        return;
 
-  private async _getAddrs(key: string): Promise<string[]> {
-    const s = await this.getNodeData(key)
-    return s.split(' ')
-  }
+      inboundAddrs.push(newAddress);
+      this.metadata['additionalInformation'].inbound_addrs = inboundAddrs.join(" ");
 
-  private async _addAddr(key: string, value: string): Promise<void> {
-    const s = await this.getNodeData(key)
-    if (s.includes(value)) {
-      throw new Error(`${value} already exists in ${key}`)
     }
-    await this.setNodeData(key, `${s} ${value}`)
+
+    else if(type === 'out') {
+
+      const outboundAddrs = this._getOutboundAddress();
+      if(outboundAddrs.indexOf(newAddress) >= 0)
+        return;
+
+      outboundAddrs.push(newAddress);
+      this.metadata['additionalInformation'].outbound_addrs = outboundAddrs.join(" ");
+
+    }
+
   }
 
-  public async setNodeData(key: string, value: string): Promise<void> {
-    // get Metamask account
+  public async resetInboundAddress() {
+    this.metadata['additionalInformation'].inbound_addrs = "";
+  }
+
+  public async resetOutboundAddress() {
+    this.metadata['additionalInformation'].outbound_addrs = "";
+  }
+
+  public async pushToAquarius(): Promise<Node> {
+
+    const chainId: number = await web3.eth.getChainId()
+    const config: Config = new ConfigHelper().getConfig(chainId)
     const account = await getCurrentAccount()
 
-    await this.setData(this.nftAddress, account, key, value)
+    const aquarius = new Aquarius(config.metadataCacheUri)
+    const ddo = await aquarius.resolve(this.id);
+
+    ddo.metadata['additionalInformation'] = this.metadata['additionalInformation'];
+
+    const encryptedResponse = await ProviderInstance.encrypt(ddo, config.providerUri)
+
+    const nft: Nft = new Nft(web3)
+    await nft.setMetadata(
+      this.nftAddress,
+      account,
+      0,
+      config.providerUri,
+      '',
+      '0x2',
+      encryptedResponse,
+      '0x' + getHash(JSON.stringify(ddo))
+    )
+
+    //TODO: This is not waiting for the true cache update
+    await aquarius.waitForAqua(ddo.id);
+
+    return this;
+
   }
 
-  public async getNodeData(key: string): Promise<string> {
-    return await this.getData(this.nftAddress, key)
+  private _getInboundAddress(): Array<string> {
+    return this.metadata['additionalInformation'].inbound_addrs ? this.metadata['additionalInformation'].inbound_addrs.split(" ") : []
   }
+
+  private _getOutboundAddress(): Array<string> {
+    return this.metadata['additionalInformation'].outbound_addrs ? this.metadata['additionalInformation'].outbound_addrs.split(" ") : []
+  }
+
 }

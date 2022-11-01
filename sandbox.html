@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sandbox</title>
+</head>
+<body>
+
+
+<script type="module">
+  import { NodeFactory, NodeSearch } from "./src";
+
+  const createNode = async (name = "Test 123") => {
+
+    const nodeFactory = new NodeFactory();
+
+    const goalNode = await nodeFactory.newGoal(name,
+      (step, description, data) => {
+
+        if (data)
+          console.log(step, description, data);
+        else
+          console.log(step, description);
+
+      },
+      (node) => {
+        console.log("DONE, node", node);
+      },
+      (error) => {
+        console.log("FAIL", error);
+      }
+    );
+
+    console.log(`goal.symbol: ${await goalNode.symbol()}`);
+    console.log(`goal.name: ${await goalNode.name()}`);
+    console.log(`goal.address: ${goalNode.nftAddress}`);
+
+  };
+
+  const searchNode = async (addr) => {
+    const nodeSearch = new NodeSearch();
+    const nodes = !addr ? await nodeSearch.searchAll() : await nodeSearch.searchByNftAddress(addr);
+    console.log(nodes);
+    return nodes;
+  };
+
+  //0x3D8c36b67511752a34e30C2A7e3b6A187e605d00
+  //
+
+  //createNode();
+  //searchNode();
+  //searchNode("0x1198FF5bC74C89e1402f4b0a49d0131745F0aDD8");
+
+  window.createNode = createNode;
+  window.searchNode = searchNode;
+
+</script>
+
+</body>
+</html>
