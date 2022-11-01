@@ -18,32 +18,32 @@ if (typeof window !== 'undefined' && window.web3) {
   web3 = new Web3(process.env.NODE_URI || configHelperNetworks[1].nodeUri)
 }
 
-/*
-https://medium.com/@parag.chirde/building-a-dapp-on-ethereum-with-vuejs-and-solidity-d01a24b54c1f
 
-https://medium.com/metamask/https-medium-com-metamask-breaking-change-injecting-web3-7722797916a8
- */
-if (typeof window !== 'undefined') {
-  window.addEventListener('load', async () => {
-    // Modern dapp browsers...
-    if (window.ethereum) {
-      window.web3 = new Web3(window.ethereum)
-      try {
-        // Request account access if needed
-        await window.ethereum.enable()
-      } catch (error) {
-        alert('User denied account access...')
-      }
-    }
-    // Legacy dapp browsers...
-    else if (window.web3) {
-      window.web3 = new Web3(web3.currentProvider)
-    }
-    // Non-dapp browsers...
-    else {
-      alert('Non-Ethereum browser detected. You should consider trying MetaMask!')
-    }
-  })
-}
+const connectWallet = async (): Promise<any> => {
 
-export { web3 }
+  if (typeof window === 'undefined')
+    return Promise.resolve();
+
+  if (window.ethereum) {
+    window.web3 = new Web3(window.ethereum)
+    try {
+      // Request account access if needed
+      await window.ethereum.enable()
+      return Promise.resolve()
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+  // Legacy dapp browsers...
+  else if (window.web3) {
+    window.web3 = new Web3(web3.currentProvider)
+    return Promise.resolve()
+  }
+  // Non-dapp browsers...
+  else {
+    return Promise.reject('Non-Ethereum browser detected. You should consider trying MetaMask!')
+  }
+
+};
+
+export { connectWallet, web3 }

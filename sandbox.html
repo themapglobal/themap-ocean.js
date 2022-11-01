@@ -8,7 +8,7 @@
 
 
 <script type="module">
-  import { NodeFactory, NodeSearch } from "./src";
+  import { NodeFactory, NodeSearch, connectWallet } from "./src";
 
   const createNode = async (name = "Test 123") => {
 
@@ -53,6 +53,7 @@
 
   window.createNode = createNode;
   window.searchNode = searchNode;
+  window.connectWallet = connectWallet;
 
 </script>
 
