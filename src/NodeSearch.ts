@@ -65,7 +65,7 @@ export class NodeSearch {
     return this.search(searchQuery)
   }
 
-  public async searchByNftAddress(addr: string): Node {
+  public async searchByNftAddress(addr: string): Promise<any> {
 
     const chainId: number = await web3.eth.getChainId()
     const config: Config = new ConfigHelper().getConfig(chainId)

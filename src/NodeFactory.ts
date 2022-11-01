@@ -160,7 +160,7 @@ export class NodeFactory {
 
   }
 
-  private _waitForAqua(ddo: any, config: any): Promise<Any> {
+  private _waitForAqua(ddo: any, config: any): Promise<any> {
 
     const aquarius = new Aquarius(config.metadataCacheUri)
 
