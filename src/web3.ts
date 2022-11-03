@@ -41,7 +41,7 @@ const connectWallet = async (): Promise<any> => {
   }
   // Non-dapp browsers...
   else {
-    return Promise.reject('Non-Ethereum browser detected. You should consider trying MetaMask!')
+    return Promise.reject({ message: 'Non-Ethereum browser detected. You should consider trying MetaMask!' })
   }
 
 };
