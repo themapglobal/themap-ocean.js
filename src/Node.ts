@@ -108,6 +108,7 @@ export class Node extends Nft {
     const ddo = await aquarius.resolve(this.id);
 
     ddo.metadata['additionalInformation'] = this.metadata['additionalInformation'];
+    ddo.metadata['description'] = this.metadata['description'];
 
     const encryptedResponse = await ProviderInstance.encrypt(ddo, config.providerUri)
 
