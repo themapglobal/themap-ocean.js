@@ -34,20 +34,22 @@ const getAddresses = () => {
 export class NodeFactory {
 
 
-  public async newGoal(name: string, onProgress: Function, done: Function, onFail: Function): Promise<Node> {
+  public async newGoal(name: string, inboundAddrs: string[], outboundAddrs: string[], onProgress: Function, done: Function, onFail: Function): Promise<Node> {
     const symbol = `GOAL-${this._randomNumber()}`
-    return this._newNode(symbol, name, "goal", onProgress, done, onFail)
+    return this._newNode(symbol, name, "goal", inboundAddrs.join(" "), outboundAddrs.join(" "), onProgress, done, onFail)
   }
 
-  public async newProject(name: string, onProgress: Function, done: Function, onFail: Function): Promise<Node> {
+  public async newProject(name: string, inboundAddrs: string[], outboundAddrs: string[], onProgress: Function, done: Function, onFail: Function): Promise<Node> {
     const symbol = `PROJ-${this._randomNumber()}`
-    return this._newNode(symbol, name, "project", onProgress, done, onFail)
+    return this._newNode(symbol, name, "project", inboundAddrs.join(" "), outboundAddrs.join(" "), onProgress, done, onFail)
   }
 
   private async _newNode(
     symbol: string,
     name: string,
     type: string,
+    inboundAddrs: string,
+    outboundAddrs: string,
     onProgress: Function = ()=>{},
     done: Function = ()=>{},
     fail: Function = ()=>{},
@@ -113,7 +115,7 @@ export class NodeFactory {
 
       onProgress(2, "NFT created", { nftAddress, dataTokenAddress, transaction: tx })
 
-      const ddo = this._getDdoData(chainId, nftAddress, dataTokenAddress, symbol, name, type)
+      const ddo = this._getDdoData(chainId, nftAddress, dataTokenAddress, symbol, name, type, inboundAddrs, outboundAddrs)
 
       onProgress(3, "DDO", { ddo })
 
@@ -168,7 +170,17 @@ export class NodeFactory {
 
   }
 
-  private _getDdoData(chainId: number, nftAddress: string, dataTokenAddress: string, symbol: string, name: string, type: string): DDO {
+  private _getDdoData(
+    chainId: number,
+    nftAddress: string,
+    dataTokenAddress: string,
+    symbol: string,
+    name: string,
+    type: string,
+    inbound_addrs: string = "",
+    outbound_addrs: string = "",
+    ): DDO {
+
     // set ddo metadata
     const ddo: DDO = {
       '@context': ['https://w3id.org/did/v1'],
@@ -186,8 +198,8 @@ export class NodeFactory {
         author: 'TheMap',
         license: 'https://market.oceanprotocol.com/terms',
         additionalInformation: {
-          inbound_addrs: "",
-          outbound_addrs: "",
+          inbound_addrs,
+          outbound_addrs,
           deleted: false,
           type
         }
