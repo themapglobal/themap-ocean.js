@@ -1,4 +1,4 @@
-import { configHelperNetworks } from '@oceanprotocol/lib'
+import { Config, ConfigHelper, configHelperNetworks } from "@oceanprotocol/lib";
 import Web3 from 'web3'
 
 let web3: Web3
@@ -26,6 +26,12 @@ const connectWallet = async (): Promise<any> => {
 
   if (window.ethereum) {
     window.web3 = new Web3(window.ethereum)
+
+    const chainId = await web3.eth.net.getId();
+    const config: Config = new ConfigHelper().getConfig(chainId)
+    if(!config)
+      return Promise.reject({ message: "There is no Ocean deployment on the selected network" })
+
     try {
       // Request account access if needed
       await window.ethereum.enable()
