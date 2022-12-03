@@ -49,21 +49,21 @@ export class Node extends Nft {
     return await nftContract.methods.symbol().call()
   }
 
-  public async addInboundAddress(newAddress: string): Promise<any> {
+  public addInboundAddress(newAddress: string) {
     return this._addEdge("in", newAddress)
   }
 
-  public async addOutboundAddress(newAddress: string): Promise<any> {
+  public addOutboundAddress(newAddress: string) {
     return this._addEdge("out", newAddress)
   }
 
   private _addEdge(type: string, newAddress: string) {
 
     if(!isValidAddress(newAddress))
-      return Promise.reject("Invalid address!");
+      return;
 
     if(newAddress === this.nftAddress)
-      return Promise.reject("Node can't have edge to itself");
+      return;
 
 
     if(type === 'in') {
