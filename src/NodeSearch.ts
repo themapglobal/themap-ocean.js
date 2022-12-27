@@ -15,7 +15,6 @@ export class NodeSearch {
     if (nodes.hits && nodes.hits.hits) {
       // return nodes.hits.hits.map(hit => hit._source)
       nodesFound = nodes.hits.hits.map((hit) => {
-        
 
 		let mockMetadata = true;
 		// if true, inject parent, pos, nodeOpts and edgeOpts into metadata.additionalInformation
@@ -28,8 +27,8 @@ export class NodeSearch {
 	
 			inboundEdges.forEach(edge => {
 				edgeOpts[edge] = {
-					label: '',
-					desc: '',
+					label: 'mock edge-label',
+					desc: 'mock edge-desc',
 					weight: 5,
 					tags: []
 				};
@@ -37,8 +36,8 @@ export class NodeSearch {
 	
 			outboundEdges.forEach(edge => {
 				edgeOpts[edge] = {
-					label: '',
-					desc: '',
+					label: 'mock edge-label',
+					desc: 'mock edge-desc',
 					weight: 5,
 					tags: []
 				};
@@ -57,8 +56,8 @@ export class NodeSearch {
 						nodeOpts: {
 							parent: null,
 							pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
-							notes: 'on-chain notes',
-							desc: 'on-chain description',
+							notes: 'mock node-notes',
+							desc: 'mock node-desc',
 						},
 						edgeOpts: edgeOpts
 					}
@@ -171,8 +170,8 @@ export class NodeSearch {
 
 		inboundEdges.forEach(edge => {
             edgeOpts[edge] = {
-				label: 'on-chain label',
-				desc: 'on-chain description',
+				label: 'mock edge-label',
+				desc: 'mock edge-desc',
 				weight: 5,
 				tags: []
 			};
@@ -180,8 +179,8 @@ export class NodeSearch {
 
 		outboundEdges.forEach(edge => {
             edgeOpts[edge] = {
-				label: 'on-chain label',
-				desc: 'on-chain description',
+				label: 'mock edge-label',
+				desc: 'mock edge-desc',
 				weight: 5,
 				tags: []
 			};
@@ -200,8 +199,8 @@ export class NodeSearch {
 					nodeOpts: {
 						parent: null,
 						pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
-						notes: 'on-chain notes',
-						desc: 'on-chain description',
+						notes: 'mock node-notes',
+						desc: 'mock node-desc',
 					},
 					edgeOpts: edgeOpts
 				}
