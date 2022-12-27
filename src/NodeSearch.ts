@@ -21,6 +21,7 @@ export class NodeSearch {
 		// if true, inject parent, pos, nodeOpts and edgeOpts into metadata.additionalInformation
 	
 		if(mockMetadata){
+			console.log("mocking data for grapher");
 			const inboundEdges = hit._source.metadata.additionalInformation.inbound_addrs ? hit._source.metadata.additionalInformation.inbound_addrs.split(" ") : [];
 			const outboundEdges = hit._source.metadata.additionalInformation.outbound_addrs ? hit._source.metadata.additionalInformation.outbound_addrs.split(" ") : [];
 			let edgeOpts = {};
@@ -28,6 +29,7 @@ export class NodeSearch {
 			inboundEdges.forEach(edge => {
 				edgeOpts[edge] = {
 					label: '',
+					desc: '',
 					weight: 5,
 					tags: []
 				};
@@ -36,6 +38,7 @@ export class NodeSearch {
 			outboundEdges.forEach(edge => {
 				edgeOpts[edge] = {
 					label: '',
+					desc: '',
 					weight: 5,
 					tags: []
 				};
@@ -51,9 +54,12 @@ export class NodeSearch {
 					...hit._source.metadata,
 					additionalInformation: {
 						...hit._source.metadata.additionalInformation,
-						parent: null,
-						pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
-						nodeOpts: {},
+						nodeOpts: {
+							parent: null,
+							pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
+							notes: 'on-chain notes',
+							desc: 'on-chain description',
+						},
 						edgeOpts: edgeOpts
 					}
 				}
@@ -158,13 +164,15 @@ export class NodeSearch {
 	// if true, inject parent, pos, nodeOpts and edgeOpts into metadata.additionalInformation
 
 	if(mockMetadata){
+		console.log("mocking data for grapher");
 		const inboundEdges = response.metadata.additionalInformation.inbound_addrs ? response.metadata.additionalInformation.inbound_addrs.split(" ") : [];
         const outboundEdges = response.metadata.additionalInformation.outbound_addrs ? response.metadata.additionalInformation.outbound_addrs.split(" ") : [];
 		let edgeOpts = {};
 
 		inboundEdges.forEach(edge => {
             edgeOpts[edge] = {
-				label: '',
+				label: 'on-chain label',
+				desc: 'on-chain description',
 				weight: 5,
 				tags: []
 			};
@@ -172,7 +180,8 @@ export class NodeSearch {
 
 		outboundEdges.forEach(edge => {
             edgeOpts[edge] = {
-				label: '',
+				label: 'on-chain label',
+				desc: 'on-chain description',
 				weight: 5,
 				tags: []
 			};
@@ -188,9 +197,12 @@ export class NodeSearch {
 				...response.metadata,
 				additionalInformation: {
 					...response.metadata.additionalInformation,
-					parent: null,
-					pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
-					nodeOpts: {},
+					nodeOpts: {
+						parent: null,
+						pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
+						notes: 'on-chain notes',
+						desc: 'on-chain description',
+					},
 					edgeOpts: edgeOpts
 				}
 			}
