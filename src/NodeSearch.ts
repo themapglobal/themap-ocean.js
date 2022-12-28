@@ -56,7 +56,6 @@ export class NodeSearch {
 						nodeOpts: {
 							parent: null,
 							pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
-							notes: 'mock node-notes',
 							desc: 'mock node-desc',
 						},
 						edgeOpts: edgeOpts
@@ -199,7 +198,6 @@ export class NodeSearch {
 					nodeOpts: {
 						parent: null,
 						pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
-						notes: 'mock node-notes',
 						desc: 'mock node-desc',
 					},
 					edgeOpts: edgeOpts
