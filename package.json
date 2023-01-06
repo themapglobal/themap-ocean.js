@@ -1,6 +1,6 @@
 {
   "name": "themap-ocean.js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Connection between The Map and ocean.js library",
   "source": "./src/index.ts",
   "main": "./dist/lib.js",
