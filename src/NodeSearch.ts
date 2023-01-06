@@ -20,15 +20,14 @@ export class NodeSearch {
 		// if true, inject parent, pos, nodeOpts and edgeOpts into metadata.additionalInformation
 	
 		if(mockMetadata){
-			console.log("mocking data for grapher");
 			const inboundEdges = hit._source.metadata.additionalInformation.inbound_addrs ? hit._source.metadata.additionalInformation.inbound_addrs.split(" ") : [];
 			const outboundEdges = hit._source.metadata.additionalInformation.outbound_addrs ? hit._source.metadata.additionalInformation.outbound_addrs.split(" ") : [];
 			let edgeOpts = {};
 	
 			inboundEdges.forEach(edge => {
 				edgeOpts[edge] = {
-					label: 'mock edge-label',
-					desc: 'mock edge-desc',
+					label: '',
+					desc: '',
 					weight: 5,
 					tags: []
 				};
@@ -36,8 +35,8 @@ export class NodeSearch {
 	
 			outboundEdges.forEach(edge => {
 				edgeOpts[edge] = {
-					label: 'mock edge-label',
-					desc: 'mock edge-desc',
+					label: '',
+					desc: '',
 					weight: 5,
 					tags: []
 				};
@@ -56,7 +55,7 @@ export class NodeSearch {
 						nodeOpts: {
 							parent: null,
 							pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
-							desc: 'mock node-desc',
+							desc: '',
 						},
 						edgeOpts: edgeOpts
 					}
@@ -169,8 +168,8 @@ export class NodeSearch {
 
 		inboundEdges.forEach(edge => {
             edgeOpts[edge] = {
-				label: 'mock edge-label',
-				desc: 'mock edge-desc',
+				label: '',
+				desc: '',
 				weight: 5,
 				tags: []
 			};
@@ -178,8 +177,8 @@ export class NodeSearch {
 
 		outboundEdges.forEach(edge => {
             edgeOpts[edge] = {
-				label: 'mock edge-label',
-				desc: 'mock edge-desc',
+				label: '',
+				desc: '',
 				weight: 5,
 				tags: []
 			};
@@ -198,7 +197,7 @@ export class NodeSearch {
 					nodeOpts: {
 						parent: null,
 						pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
-						desc: 'mock node-desc',
+						desc: '',
 					},
 					edgeOpts: edgeOpts
 				}
