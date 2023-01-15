@@ -14,22 +14,9 @@ import {
   ZERO_ADDRESS
 } from '@oceanprotocol/lib'
 import fs from 'fs'
-import { homedir } from 'os'
 import { Node } from './Node'
 import { getCurrentAccount } from './utils'
 import { web3 } from './web3'
-
-const getAddresses = () => {
-  const data = JSON.parse(
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
-    fs.readFileSync(
-      process.env.ADDRESS_FILE ||
-        `${homedir}/.ocean/ocean-contracts/artifacts/address.json`,
-      'utf8'
-    )
-  )
-  return data.development
-}
 
 export class NodeFactory {
 
@@ -61,7 +48,7 @@ export class NodeFactory {
       const config: Config = new ConfigHelper().getConfig(chainId)
 
       const factory: NftFactory = new NftFactory(
-        config.erc721FactoryAddress || getAddresses().ERC721Factory,
+        config.erc721FactoryAddress,
         web3
       )
 
@@ -92,7 +79,7 @@ export class NodeFactory {
       }
 
       const dispenserParams: DispenserCreationParams = {
-        dispenserAddress: config.dispenserAddress || getAddresses().Dispenser,
+        dispenserAddress: config.dispenserAddress,
         maxTokens: '1',
         maxBalance: '1',
         withMint: true,

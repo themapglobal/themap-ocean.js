@@ -15,14 +15,62 @@ export class NodeSearch {
     if (nodes.hits && nodes.hits.hits) {
       // return nodes.hits.hits.map(hit => hit._source)
       nodesFound = nodes.hits.hits.map((hit) => {
-        return new Node(
-          hit._source.nftAddress,
-          web3,
-          chainId,
-          config,
-          hit._source.id,
-          hit._source.metadata
-        )
+
+		let mockMetadata = true;
+		// if true, inject parent, pos, nodeOpts and edgeOpts into metadata.additionalInformation
+	
+		if(mockMetadata){
+			const inboundEdges = hit._source.metadata.additionalInformation.inbound_addrs ? hit._source.metadata.additionalInformation.inbound_addrs.split(" ") : [];
+			const outboundEdges = hit._source.metadata.additionalInformation.outbound_addrs ? hit._source.metadata.additionalInformation.outbound_addrs.split(" ") : [];
+			let edgeOpts = {};
+	
+			inboundEdges.forEach(edge => {
+				edgeOpts[edge] = {
+					label: '',
+					desc: '',
+					weight: 5,
+					tags: []
+				};
+			});
+	
+			outboundEdges.forEach(edge => {
+				edgeOpts[edge] = {
+					label: '',
+					desc: '',
+					weight: 5,
+					tags: []
+				};
+			});
+			
+			return new Node(
+				hit._source.nftAddress,
+				web3,
+				chainId,
+				config,
+				hit._source.id,
+				{
+					...hit._source.metadata,
+					additionalInformation: {
+						...hit._source.metadata.additionalInformation,
+						nodeOpts: {
+							parent: null,
+							pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
+							desc: '',
+						},
+						edgeOpts: edgeOpts
+					}
+				}
+			)
+		} else {
+			return new Node(
+				hit._source.nftAddress,
+				web3,
+				chainId,
+				config,
+				hit._source.id,
+				hit._source.metadata
+			);
+		}
       })
     }
 
@@ -65,6 +113,42 @@ export class NodeSearch {
     return this.search(searchQuery)
   }
 
+  public async searchByMapCategory(mapCategory: string): Promise<Node[]> {
+    const chainId: number = await web3.eth.getChainId()
+
+    const searchQuery = {
+      query: {
+        bool: {
+          filter: [
+            {
+              terms: {
+                chainId: [chainId]
+              }
+            },
+            {
+              terms: {
+                'metadata.tags': ['themap', mapCategory]
+              }
+            },
+            {
+              term: {
+                'purgatory.state': false
+              }
+            },
+            {
+              term: {
+                'metadata.additionalInformation.deleted': false
+              }
+            }
+          ]
+        }
+      },
+      size: 10000
+    }
+
+    return this.search(searchQuery)
+  }
+
   public async searchByNftAddress(addr: string): Promise<any> {
 
     const chainId: number = await web3.eth.getChainId()
@@ -73,15 +157,62 @@ export class NodeSearch {
     const aquarius = new Aquarius(config.metadataCacheUri)
     const response = await aquarius.resolve(generateDid(addr, chainId));
 
-    return new Node(
-      response.nftAddress,
-      web3,
-      chainId,
-      config,
-      response.id,
-      response.metadata
-    )
+	let mockMetadata = true;
+	// if true, inject parent, pos, nodeOpts and edgeOpts into metadata.additionalInformation
 
+	if(mockMetadata){
+		console.log("mocking data for grapher");
+		const inboundEdges = response.metadata.additionalInformation.inbound_addrs ? response.metadata.additionalInformation.inbound_addrs.split(" ") : [];
+        const outboundEdges = response.metadata.additionalInformation.outbound_addrs ? response.metadata.additionalInformation.outbound_addrs.split(" ") : [];
+		let edgeOpts = {};
+
+		inboundEdges.forEach(edge => {
+            edgeOpts[edge] = {
+				label: '',
+				desc: '',
+				weight: 5,
+				tags: []
+			};
+        });
+
+		outboundEdges.forEach(edge => {
+            edgeOpts[edge] = {
+				label: '',
+				desc: '',
+				weight: 5,
+				tags: []
+			};
+        });
+		
+		return new Node(
+			response.nftAddress,
+			web3,
+			chainId,
+			config,
+			response.id,
+			{
+				...response.metadata,
+				additionalInformation: {
+					...response.metadata.additionalInformation,
+					nodeOpts: {
+						parent: null,
+						pos: {x: (100 + Math.floor(Math.random() * 1000)), y: (100 + Math.floor(Math.random() * 1000))},
+						desc: '',
+					},
+					edgeOpts: edgeOpts
+				}
+			}
+		)
+	} else {
+		return new Node(
+			response.nftAddress,
+			web3,
+			chainId,
+			config,
+			response.id,
+			response.metadata
+		);
+	}
   }
 
   public async searchText(text: string): Promise<Node[]> {
