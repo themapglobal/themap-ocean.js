@@ -14,11 +14,13 @@ import { web3 } from "./web3";
 export class Node extends Nft {
 
   public nftAddress: string
+  public nftOwner: string
   public id: string
   public metadata: object
 
   constructor(
     nftAddress: string,
+    nftOwner: string,
     web3: Web3,
     network?: string | number,
     config?: Config,
@@ -28,6 +30,7 @@ export class Node extends Nft {
 
     super(web3, network, null, config)
     this.nftAddress = nftAddress
+    this.nftOwner = nftOwner
     this.id = id
     this.metadata = metadata
 

@@ -44,6 +44,7 @@ export class NodeSearch {
 			
 			return new Node(
 				hit._source.nftAddress,
+				hit._source.nft.owner,
 				web3,
 				chainId,
 				config,
@@ -64,6 +65,7 @@ export class NodeSearch {
 		} else {
 			return new Node(
 				hit._source.nftAddress,
+				hit._source.nft.owner,
 				web3,
 				chainId,
 				config,
@@ -183,9 +185,10 @@ export class NodeSearch {
 				tags: []
 			};
         });
-		
+
 		return new Node(
 			response.nftAddress,
+			response.nft.owner,
 			web3,
 			chainId,
 			config,
@@ -201,11 +204,12 @@ export class NodeSearch {
 					},
 					edgeOpts: edgeOpts
 				}
-			}
+			},
 		)
 	} else {
 		return new Node(
 			response.nftAddress,
+      response.nft.owner,
 			web3,
 			chainId,
 			config,

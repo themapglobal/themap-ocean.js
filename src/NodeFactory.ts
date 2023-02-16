@@ -23,12 +23,25 @@ export class NodeFactory {
 
   public async newGoal(name: string, inboundAddrs: string[], outboundAddrs: string[], onProgress: Function, done: Function, onFail: Function): Promise<Node> {
     const symbol = `GOAL-${this._randomNumber()}`
-    return this._newNode(symbol, name, "goal", inboundAddrs.join(" "), outboundAddrs.join(" "), onProgress, done, onFail)
+
+    return this._newNode(
+      symbol,
+      name,
+      "goal",
+      Array.isArray(inboundAddrs) ? inboundAddrs.join(" ") : "",
+      Array.isArray(outboundAddrs) ? outboundAddrs.join(" ") : "",
+      onProgress, done, onFail)
   }
 
   public async newProject(name: string, inboundAddrs: string[], outboundAddrs: string[], onProgress: Function, done: Function, onFail: Function): Promise<Node> {
     const symbol = `PROJ-${this._randomNumber()}`
-    return this._newNode(symbol, name, "project", inboundAddrs.join(" "), outboundAddrs.join(" "), onProgress, done, onFail)
+    return this._newNode(
+      symbol,
+      name,
+      "project",
+      Array.isArray(inboundAddrs) ? inboundAddrs.join(" ") : "",
+      Array.isArray(outboundAddrs) ? outboundAddrs.join(" ") : "",
+      onProgress, done, onFail)
   }
 
   private async _newNode(
@@ -129,6 +142,7 @@ export class NodeFactory {
 
       const node = new Node(
         nftAddress,
+        account,
         web3,
         chainId,
         config,
