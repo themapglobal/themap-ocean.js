@@ -14,7 +14,7 @@
 
     const nodeFactory = new NodeFactory();
 
-    const goalNode = await nodeFactory.newGoal(name,
+    const goalNode = await nodeFactory.newGoal(name, null, null,
       (step, description, data) => {
 
         if (data)
