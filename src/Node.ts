@@ -6,10 +6,10 @@ import {
   Nft,
   ProviderInstance,
   setContractDefaults
-} from "@oceanprotocol/lib";
+} from '@oceanprotocol/lib'
 import Web3 from 'web3'
 import { getCurrentAccount, isValidAddress } from './utils'
-import { web3 } from "./web3";
+import { web3 } from './web3'
 
 export class Node extends Nft {
 
@@ -28,7 +28,7 @@ export class Node extends Nft {
     metadata?: object
   ) {
 
-    super(web3, network, null, config)
+    super(web3, network, config)
     this.nftAddress = nftAddress
     this.nftOwner = nftOwner
     this.id = id
@@ -38,7 +38,7 @@ export class Node extends Nft {
 
   public async name(): Promise<string> {
     const nftContract = setContractDefaults(
-      new this.web3.eth.Contract(this.nftAbi, this.nftAddress),
+      new this.web3.eth.Contract(this.getDefaultAbi(), this.nftAddress),
       this.config
     )
     return await nftContract.methods.name().call()
@@ -46,18 +46,18 @@ export class Node extends Nft {
 
   public async symbol(): Promise<string> {
     const nftContract = setContractDefaults(
-      new this.web3.eth.Contract(this.nftAbi, this.nftAddress),
+      new this.web3.eth.Contract(this.getDefaultAbi(), this.nftAddress),
       this.config
     )
     return await nftContract.methods.symbol().call()
   }
 
   public addInboundAddress(newAddress: string) {
-    return this._addEdge("in", newAddress)
+    return this._addEdge('in', newAddress)
   }
 
   public addOutboundAddress(newAddress: string) {
-    return this._addEdge("out", newAddress)
+    return this._addEdge('out', newAddress)
   }
 
   private _addEdge(type: string, newAddress: string) {
@@ -113,7 +113,7 @@ export class Node extends Nft {
     ddo.metadata['additionalInformation'] = this.metadata['additionalInformation'];
     ddo.metadata['description'] = this.metadata['description'];
 
-    const encryptedResponse = await ProviderInstance.encrypt(ddo, config.providerUri)
+    const encryptedResponse = await ProviderInstance.encrypt(ddo, chainId, config.providerUri)
 
     const nft: Nft = new Nft(web3)
     await nft.setMetadata(
