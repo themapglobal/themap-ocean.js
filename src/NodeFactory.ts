@@ -61,7 +61,7 @@ export class NodeFactory {
       const config: Config = new ConfigHelper().getConfig(chainId)
 
       const factory: NftFactory = new NftFactory(
-        config.erc721FactoryAddress,
+        config.nftFactoryAddress,
         web3
       )
 
@@ -119,7 +119,11 @@ export class NodeFactory {
 
       onProgress(3, "DDO", { ddo })
 
-      const encryptedResponse = await ProviderInstance.encrypt(ddo, config.providerUri)
+      const encryptedResponse = await ProviderInstance.encrypt(
+        ddo,
+        chainId,
+        config.providerUri
+      )
 
       onProgress(4, "Provider response", { encryptedResponse })
 
