@@ -36,27 +36,35 @@
   },
   "homepage": "https://github.com/themapglobal/themap-ocean.js#readme",
   "dependencies": {
-    "@oceanprotocol/lib": "^1.1.8",
+    "@oceanprotocol/lib": "^2.7.0",
     "web3": "^1.7.4"
   },
   "devDependencies": {
-    "parcel": "^2.7.0",
     "@types/chai": "^4.3.1",
     "@types/mocha": "^9.1.1",
     "@types/node": "^18.0.1",
     "@typescript-eslint/eslint-plugin": "^5.30.5",
     "@typescript-eslint/parser": "^5.30.5",
+    "assert": "^2.0.0",
     "chai": "^4.3.6",
     "chai-spies": "^1.0.0",
     "eslint": "^8.19.0",
     "eslint-config-oceanprotocol": "^2.0.3",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "events": "^3.1.0",
+    "https-browserify": "^1.0.0",
     "microbundle": "0.14.2",
     "mocha": "^10.0.0",
     "os-browserify": "^0.3.0",
+    "parcel": "^2.7.0",
     "prettier": "^2.7.1",
+    "punycode": "^1.4.1",
+    "querystring-es3": "^0.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.1.0",
     "ts-node": "^10.8.2",
-    "typescript": "^4.7.4"
+    "typescript": "^4.7.4",
+    "url": "^0.11.0"
   }
 }

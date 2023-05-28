@@ -101,7 +101,7 @@ export class NodeFactory {
 
       onProgress(1, "Creating NFT")
 
-      const tx = await factory.createNftErc20WithDispenser(
+      const tx = await factory.createNftWithDatatokenWithDispenser(
         account,
         nftParams,
         erc20Params,
