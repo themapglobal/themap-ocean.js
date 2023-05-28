@@ -68,7 +68,7 @@ export class NodeFactory {
       // get Metamask account
       const account = await getCurrentAccount()
 
-      onProgress(0, "Web3 Account selected", { account });
+      onProgress(0, "Web3 Account selected.", { account });
 
       // create new nft
       const nftParams: NftCreateData = {
@@ -99,7 +99,7 @@ export class NodeFactory {
         allowedSwapper: ZERO_ADDRESS
       }
 
-      onProgress(1, "Creating NFT")
+      onProgress(1, "Creating NFT.")
 
       const tx = await factory.createNftWithDatatokenWithDispenser(
         account,
@@ -113,11 +113,20 @@ export class NodeFactory {
 
       const dataTokenAddress = tx.events.TokenCreated.returnValues[0]
 
-      onProgress(2, "NFT created", { nftAddress, dataTokenAddress, transaction: tx })
+      onProgress(2, "NFT created.", { nftAddress, dataTokenAddress, transaction: tx })
 
-      const ddo = this._getDdoData(chainId, nftAddress, dataTokenAddress, symbol, name, type, inboundAddrs, outboundAddrs)
+      const ddo = this._getDdoData(
+        chainId,
+        nftAddress,
+        dataTokenAddress,
+        symbol,
+        name,
+        type,
+        inboundAddrs,
+        outboundAddrs
+      )
 
-      onProgress(3, "DDO", { ddo })
+      onProgress(3, "DDO.", { ddo })
 
       const encryptedResponse = await ProviderInstance.encrypt(
         ddo,
@@ -125,9 +134,9 @@ export class NodeFactory {
         config.providerUri
       )
 
-      onProgress(4, "Provider response", { encryptedResponse })
+      onProgress(4, "Provider response.", { encryptedResponse })
 
-      onProgress(5, "Setting DDO in NFT as metadata", { did: generateDid(nftAddress, chainId) })
+      onProgress(5, "Setting DDO in NFT as metadata.", { did: generateDid(nftAddress, chainId) })
 
       // set ddo metadata on nft
       const nft: Nft = new Nft(web3)
@@ -142,7 +151,7 @@ export class NodeFactory {
         '0x' + getHash(JSON.stringify(ddo))
       )
 
-      onProgress(6, "DDO set")
+      onProgress(6, "DDO set.")
 
       const node = new Node(
         nftAddress,
@@ -154,10 +163,10 @@ export class NodeFactory {
         ddo.metadata
       )
 
-      onProgress(7, "Waiting for Aquarius")
+      onProgress(7, 'Waiting for Aquarius.')
 
       const response = await this._waitForAqua(ddo, config)
-      onProgress(8, "Node id cached in Aquarius", { response })
+      onProgress(8, 'Node id cached in Aquarius.', { response })
 
       return done(node)
 
