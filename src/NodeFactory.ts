@@ -4,7 +4,7 @@ import {
   Aquarius,
   DDO,
   DispenserCreationParams,
-  Erc20CreateParams,
+  DatatokenCreateParams,
   generateDid,
   getHash,
   Nft,
@@ -81,7 +81,7 @@ export class NodeFactory {
       }
 
       //TODO: Needs rework
-      const erc20Params: Erc20CreateParams = {
+      const erc20Params: DatatokenCreateParams = {
         templateIndex: 1,
         cap: '1',
         feeAmount: '0',
